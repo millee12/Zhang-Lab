@@ -1,4 +1,0 @@
-
-Zhang Lab
-
-This is a repository for the Zhang lab at RPI. Students here are researching computational dynamics using homebuilt FEA solvers.
