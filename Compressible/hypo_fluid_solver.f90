@@ -13,7 +13,8 @@ call evaluateQvPML(qv,d)   ! !!!!!!!!!!!!!!!!!!!!!! evaluate for all nodes: reme
 call formid(id,rng,ien)
 !----------------------------------------------------
 ! time varying BC for velocity
-call formd_time(d,rng,ien)
+!call formd_time(d,rng,ien)
+call formd(d,rng,ien)
 if (myid == 0) write(*,*) "********** Applied Time Changing BC ***************"
 
 !===========================================================================
