@@ -84,15 +84,14 @@ allocate(dtil(ndof))
 allocate(vtil(ndof))
 !!!!!!!!!!!!!!!!!!!!
 
-open(unit = 1, file = 'residual.txt')
-open(unit = 2, file = 'ka.txt')
-open(unit = 3, file = 'mxyz.txt')
+open(unit = 1, file = 'residual.out')
+open(unit = 3, file = 'mxyz.out')
 ! Mesh Information
 ien(:,1)=[7,8,5,6,1,2,3,4]
 xref(:)=[0.0d0,0.0d0,1.0d0,0.0d0,0.0d0,1.0d0,1.0d0,1.0d0]
 fext(:)=0.0d0
-fext(3)=5.0d4
-fext(7)=5.0d4
+fext(3)=5.0d2
+fext(7)=5.0d2
 dis(:)=0.0d0
 vel(:)=0.0d0
 !specify essential boundaries
@@ -131,23 +130,21 @@ do t=1,tend
 		!write(*,*) km(i,:)
 		!enddo
 		rf=[fext-fint-fpen-fkin,rpen]
-		write(*,*) rf
 		call dgesv(nee, 1, ka, nee, IPIV, rf, nee, INFO )
 		! SGESV( N, NRHS, A, LDA, IPIV, B, LDB, INFO )
 		dnew=dnew+rf(1:ndof)
 		mlagnew=mlagnew+rf(ndof+1:ndof+ng)
 		res=sqrt(sum(rf*rf))
-		if (INFO .eq. 0) then
-		write(*,*) 'w= ', w
-		else
-		write(*,*) 'warning: linear solver exited with errors'
-		endif
 		write(1,*) res
 	enddo
+	write(1,*) '-------------'
+	dis=dnew
+	vel=vnew
+	acc=anew
 	do i=1,nnode
 	write(3,*) dnew(nsd*(i-1)+1)+xref(nsd*(i-1)+1), dnew(nsd*(i-1)+2)+xref(nsd*(i-1)+2)
 	enddo
-	stop
+		write(3,*) '-------------'
 enddo	
 !dallocate variables
 deallocate(xref)

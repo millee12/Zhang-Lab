@@ -8,4 +8,4 @@ main: $(OBJ)
 $(OBJ):
 	gfortran -c $(FIL)	
 clean:
-	rm -rf *.o *.mod main
+	rm -rf *.out *.o *.mod main
