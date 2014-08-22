@@ -1,9 +1,9 @@
-subroutine s_int(nee,nsd,nnode,nen,nel,ngp,ndof,eldof,ng,rc1,rc2,kappa,xref,dg,nx,detjac,ien,fint,ka)
+subroutine s_int(nee,nsd,nnode,nen,nel,ngp,ndof,eldof,ng,rc1,rc2,kappa,xref,dis,nx,detjac,ien,fint,ka)
 !For the internal forces (calculated using Mooney-Rivlin)
 integer :: nsd,nnode,nen,nel,ngp,ndof,eldof,ng
 real(8) :: fint(ndof),sint(ndof)
 real(8) :: F(nsd,nsd),pk2(3),rc1,rc2,kappa,CMR(3,3)
-real(8) :: xref(ndof),dg(ndof)
+real(8) :: xref(ndof),dis(ndof)
 real(8) :: detjac(nel)
 real(8) :: nx(nen,nsd,ngp,nel)
 real(8) :: fpen(ndof)
@@ -22,11 +22,11 @@ do el=1,nel
 	sint(:)=0.0d0
 	do gp=1,ngp
 		!Calculate Deformation Gradient
-		call defgrad(nen,nsd,xref,dg,nx(:,:,gp,el),ien,F)
+		call defgrad(nen,nsd,xref,dis,nx(:,:,gp,el),ien,F)
 		! Calculate stress and stiffness using the Mooney-Rivlin material model
 		call mooney(F,rc1,rc2,kappa,CMR,pk2,ssuper)
 		!Make strain-displacement matrices
-		call getB(ndof,eldof,nen,nsd,nx(:,:,gp,el),dg,BL,BNL)
+		call getB(ndof,eldof,nen,nsd,nx(:,:,gp,el),dis,BL,BNL)
 		! Calculate stress gradient at gauss points
 		sint(:)=sint(:)+matmul(transpose(BL),pk2)*detjac(el)
 		kl(:,:)=kl(:,:)+matmul(transpose(BL),matmul(CMR,BL))*detjac(el)
