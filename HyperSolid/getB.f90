@@ -1,5 +1,6 @@
 subroutine getB(ndof,eldof,nen,nsd,nx,dis,BL,BNL)
-integer :: ndof,eldof
+implicit none
+integer :: ndof,eldof,nsd,nen
 real(8) :: dis(ndof),l(nsd,nsd),nx(nen,nsd)
 real(8) :: BL(3,eldof),BL0(3,eldof),BL1(3,eldof),BNL(4,eldof)
 !Make strain-displacement matrices
