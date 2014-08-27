@@ -1,7 +1,7 @@
-subroutine getM(nsd,dt,beta,gamma,rho,ndof,ngp,eldof,nen,nel,detjac,ien,shp,M,km)
+subroutine getM(nsd,dt,beta,gamma,rho,ndof,ngp,eldof,nen,nel,detjac,ien,shp,Mass,km)
 implicit none 
 integer :: el,nel,ndof,eldof,gp,ngp,nen,al,bl,pg,qg,i,ien(eldof,nel),pl,ql,nsd 
-real(8) :: M(ndof,ndof),fkin(ndof),mel(eldof,eldof),km(ndof,ndof),detjac(nel),shp(0:nsd,nen,ngp)
+real(8) :: Mass(ndof,ndof),fkin(ndof),mel(eldof,eldof),km(ndof,ndof),detjac(nel),shp(0:nsd,nen,ngp)
 real(8) :: rho,dt,beta,gamma
 do el=1,nel
     mel(:,:)=0.0d0
@@ -19,10 +19,10 @@ do el=1,nel
                 ql=nsd*(bl-1)+i;
                 pg=ien(pl,el);
                 qg=ien(ql,el);
-                M(pg,qg)=M(pg,qg)+mel(al,bl);
+                Mass(pg,qg)=Mass(pg,qg)+mel(al,bl);
             enddo
         enddo
     enddo
 enddo
-km=(1/(beta*dt**2))*M
+km=(1/(beta*dt**2))*Mass
 end subroutine getM

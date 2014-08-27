@@ -17,6 +17,7 @@ enddo
 detF=F(1,1)*F(2,2)-F(1,2)*F(2,2)
 !Check for element inversion
 if (detF < 0.0d0) then
-write(*,*) 'warning: negative jacobian'
+write(*,*) 'error: negative jacobian'
+stop
 endif
 end subroutine

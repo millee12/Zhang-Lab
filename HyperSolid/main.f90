@@ -37,7 +37,7 @@ real(8) :: rc1,rc2,kappa
 !=====================
 !For the kinematic forces:
 !kinematic force,kinematic stiffness
-real(8),allocatable :: fkin(:),km(:,:),M(:,:)
+real(8),allocatable :: fkin(:),km(:,:),Mass(:,:),mtmp(:,:)
 real(8) :: rho=1.0d0
 !=====================
 !Solver
@@ -66,7 +66,6 @@ allocate(nx(nen,nsd,ngp,ne))
 allocate(detjac(ne))
 allocate(fext(ndof))
 allocate(fpen(ndof))
-allocate(gx(ng))
 allocate(mlag(ng))
 allocate(rpen(ng))
 allocate(tmpgdof(ndof,ndof))
@@ -76,7 +75,8 @@ allocate(kt(ndof,ndof))
 allocate(IPIV(nee))
 allocate(fkin(ndof))
 allocate(km(ndof,ndof))
-allocate(M(ndof,ndof))
+allocate(Mass(ndof,ndof))
+allocate(mtmp(ndof,ndof))
 allocate(vel(ndof))
 allocate(acc(ndof))
 allocate(mlagnew(ng))
@@ -124,8 +124,14 @@ do a=1,nn
 	xref(p)=xyz(a,1)
 	xref(q)=xyz(a,2)
 enddo
-open(unit = 1, file = 'residual.out')
+open(unit = 21, file = 'fkin.out')
+open(unit = 12, file = 'residual.out')
 open(unit = 3, file = 'mxyz.out')
+close(10)
+close(11)
+open(unit=10,file='dg.out')
+open(unit=4,file='d.out')
+open(unit=5,file='fint.out')
 ! Mesh Information
 !fext(:)=0.0d0
 !fext(3)=5.0d2
@@ -137,6 +143,7 @@ fint(:)=0.0d0
 !specify essential boundaries
 call s_ess(nsd,nen,ne,ndof,eldof,ien,ng,tmpgdof,fext)
 allocate(gdof(ng))
+allocate(gx(ng))
 call s_gdof(ndof,ng,tmpgdof,gdof,gx,mlag)
 !MR constants
 rc1=8.6207d3
@@ -145,10 +152,16 @@ kappa=1.6667d5
 !save shape functions and derivatives
 call svshp(ndof,eldof,nen,nsd,ngp,ne,ien,xref,nx,detjac,shp)
 !save mass matrix and kinematic stiffness
-call getM(nsd,dt,beta,gamma,rho,ndof,ngp,eldof,nen,ne,detjac,ien,shp,M,km)
+call getM(nsd,dt,beta,gamma,rho,ndof,ngp,eldof,nen,ne,detjac,ien,shp,Mass,km)
+
 !initial acceleration
 acc=fext-fint
-call dgesv(ndof, 1, M, ndof, IPIV, acc, ndof, INFO )
+mtmp=Mass
+call dgesv(ndof, 1, mtmp, ndof, IPIV, acc, ndof, INFO )
+write(21,*) '-------Mass Matrix159---------'
+do i=1,ndof
+    write(21,*) Mass(i,:)
+enddo
 !Time Loop
 do t=1,tend
 	write(*,*) 't=', t
@@ -162,33 +175,59 @@ do t=1,tend
     mlagnew=mlag
 	res=huge(1.d0)
 	do while ((res .ge. tol) .and. (w .le. 100))
+	ka(:,:)=0.0d0
+	kt(:,:)=0.0d0
+	fint(:)=0.0d0
+	fpen(:)=0.0d0
+	fkin(:)=0.0d0
 	 	w=w+1
+		write(*,*) 'w= ',w
         anew=(1/(beta*dt**2))*(dnew-dtil)
         vnew=vtil+gamma*dt*anew
 		!internal forces and tangent stiffness matrix
 		call s_int(nee,nsd,nn,nen,ne,ngp,ndof,eldof,ng,rc1,rc2,kappa,xref,dnew,nx,detjac,ien,fint,ka)
-		write(*,*) fint
-		call s_kin(nee,ndof,anew,M,km,fkin,ka)
+		call s_kin(nee,ndof,anew,Mass,km,fkin,ka)
 		call s_pen(ndof,nee,ng,dnew,gdof,gx,kappa,mlagnew,rpen,fpen,ka)
-		rf=[fext-fint-fpen-fkin,rpen]
+		write(*,*) fpen
+		rf(1:ndof)=fext-fint-fpen-fkin
+		rf(ndof+1:nee)=rpen
+		res=sqrt(sum(rf**2))/ne
+		do i=1,ndof
+		write(21,*) fkin(i)
+		enddo
+		write(21,*) '-'
+
+		write(12,*) res
+		write(10,*) '----residual------'
+		do i=1,nee
+			write(10,*) rf(i)
+		enddo
+
 		call dgesv(nee, 1, ka, nee, IPIV, rf, nee, INFO )
+		write(10,*) '----increments------'
+		do i=1,nee
+			write(10,*) rf(i)
+		enddo
 		dnew=dnew+rf(1:ndof)
+		write(4,*) dnew
+		write(4,*) '-----'
+		write(*,*) INFO
 		mlagnew=mlagnew+rf(ndof+1:ndof+ng)
-		res=sqrt(sum(rf*rf))
-		write(1,*) res
-		if (w .ge. 1) then
+			do i=1,nn
+				write(3,*) dnew(nsd*(i-1)+1)+xref(nsd*(i-1)+1), dnew(nsd*(i-1)+2)+xref(nsd*(i-1)+2)
+			enddo
+				write(3,*) '-------------'
+		if (w .ge. 2) then
 		stop
 		endif
 	enddo
+	stop
 
 	write(1,*) '-------------'
 	dis=dnew
 	vel=vnew
 	acc=anew
-	do i=1,nn
-	write(3,*) dnew(nsd*(i-1)+1)+xref(nsd*(i-1)+1), dnew(nsd*(i-1)+2)+xref(nsd*(i-1)+2)
-	enddo
-	write(3,*) '-------------'
+	mlag=mlagnew
 enddo	
 
 !dallocate variables

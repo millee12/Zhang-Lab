@@ -1,13 +1,17 @@
-subroutine getB(ndof,eldof,nen,nsd,nx,dis,BL,BNL)
+subroutine getB(el,ne,ndof,eldof,nen,ien,nsd,nx,dis,BL,BNL)
 implicit none
-integer :: ndof,eldof,nsd,nen
-real(8) :: dis(ndof),l(nsd,nsd),nx(nen,nsd)
+integer :: ndof,eldof,nsd,nen,a,p,el,ien(eldof,ne),ne
+real(8) :: dis(ndof),uel(eldof),l(nsd,nsd),nx(nen,nsd)
 real(8) :: BL(3,eldof),BL0(3,eldof),BL1(3,eldof),BNL(4,eldof)
+do a=1,eldof
+	p=ien(a,el)
+	uel(a)=dis(p)
+enddo
 !Make strain-displacement matrices
-l(1,1)=nx(1,1)*dis(1)+nx(2,1)*dis(3)+nx(3,1)*dis(5)+nx(4,1)*dis(7)
-l(2,2)=nx(1,2)*dis(2)+nx(2,2)*dis(4)+nx(3,2)*dis(6)+nx(4,2)*dis(8)
-l(2,1)=nx(1,1)*dis(2)+nx(2,1)*dis(4)+nx(3,1)*dis(6)+nx(4,1)*dis(8)
-l(1,2)=nx(1,2)*dis(1)+nx(2,2)*dis(3)+nx(3,2)*dis(5)+nx(4,2)*dis(7)
+l(1,1)=nx(1,1)*uel(1)+nx(2,1)*uel(3)+nx(3,1)*uel(5)+nx(4,1)*uel(7)
+l(2,2)=nx(1,2)*uel(2)+nx(2,2)*uel(4)+nx(3,2)*uel(6)+nx(4,2)*uel(8)
+l(2,1)=nx(1,1)*uel(2)+nx(2,1)*uel(4)+nx(3,1)*uel(6)+nx(4,1)*uel(8)
+l(1,2)=nx(1,2)*uel(1)+nx(2,2)*uel(3)+nx(3,2)*uel(5)+nx(4,2)*uel(7)
 ! Make BL0
 BL0(1,:)=[nx(1,1),0.0d0, nx(2,1),0.0d0, nx(3,1), 0.0d0, nx(4,1), 0.0d0]
 BL0(2,:)=[0.0d0, nx(1,2), 0.0d0, nx(2,2), 0.0d0, nx(3,2), 0.0d0, nx(4,2)]
@@ -28,4 +32,4 @@ BNL(1,:)=[nx(1,1), 0.0d0, nx(2,1), 0.0d0, nx(3,1), 0.0d0, nx(4,1), 0.0d0]
 BNL(2,:)=[nx(1,2), 0.0d0, nx(2,2), 0.0d0, nx(3,2), 0.0d0, nx(4,2), 0.0d0]
 BNL(3,:)=[0.0d0,nx(1,1), 0.0d0, nx(2,1), 0.0d0, nx(3,1), 0.0d0, nx(4,1)]
 BNL(4,:)=[0.0d0,nx(1,2), 0.0d0, nx(2,2), 0.0d0, nx(3,2), 0.0d0, nx(4,2)]
-end subroutine
+end subroutine getB 

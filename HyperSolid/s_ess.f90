@@ -61,4 +61,5 @@ ng_true=1
 end where
 
 ng=sum(ng_true)
+write(*,*) 'ng= ', ng
 end subroutine s_ess
