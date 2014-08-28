@@ -6,7 +6,7 @@ use meshgen_solid
 implicit none
 !total: dimensions, nodes, nodes/element, elements,
 !gauss points,time,essential BCS
-integer :: nsd=2,nn=9,nen=4,ne=4,ngp=4,tend=50,ng=3
+integer :: nsd=2,nn=9,nen=4,ne=4,ngp=4,tend=1000,ng=3
 !timestep
 real(8) :: dt=1.0d-3,beta=0.25d0,gamma=0.5d0,tol=1.0d-6
 !=====================
@@ -124,14 +124,13 @@ do a=1,nn
 	xref(p)=xyz(a,1)
 	xref(q)=xyz(a,2)
 enddo
+open(unit=5,file='fint.out')
 open(unit = 21, file = 'fkin.out')
+open(unit = 3, file = 'fpen.out')
 open(unit = 12, file = 'residual.out')
-open(unit = 3, file = 'mxyz.out')
-close(10)
-close(11)
 open(unit=10,file='dg.out')
 open(unit=4,file='d.out')
-open(unit=5,file='fint.out')
+open(unit=22,file='xyz.out')
 ! Mesh Information
 !fext(:)=0.0d0
 !fext(3)=5.0d2
@@ -158,10 +157,6 @@ call getM(nsd,dt,beta,gamma,rho,ndof,ngp,eldof,nen,ne,detjac,ien,shp,Mass,km)
 acc=fext-fint
 mtmp=Mass
 call dgesv(ndof, 1, mtmp, ndof, IPIV, acc, ndof, INFO )
-write(21,*) '-------Mass Matrix159---------'
-do i=1,ndof
-    write(21,*) Mass(i,:)
-enddo
 !Time Loop
 do t=1,tend
 	write(*,*) 't=', t
@@ -175,11 +170,7 @@ do t=1,tend
     mlagnew=mlag
 	res=huge(1.d0)
 	do while ((res .ge. tol) .and. (w .le. 100))
-	ka(:,:)=0.0d0
-	kt(:,:)=0.0d0
-	fint(:)=0.0d0
-	fpen(:)=0.0d0
-	fkin(:)=0.0d0
+		ka(:,:)=0.0d0
 	 	w=w+1
 		write(*,*) 'w= ',w
         anew=(1/(beta*dt**2))*(dnew-dtil)
@@ -188,13 +179,22 @@ do t=1,tend
 		call s_int(nee,nsd,nn,nen,ne,ngp,ndof,eldof,ng,rc1,rc2,kappa,xref,dnew,nx,detjac,ien,fint,ka)
 		call s_kin(nee,ndof,anew,Mass,km,fkin,ka)
 		call s_pen(ndof,nee,ng,dnew,gdof,gx,kappa,mlagnew,rpen,fpen,ka)
-		write(*,*) fpen
-		rf(1:ndof)=fext-fint-fpen-fkin
-		rf(ndof+1:nee)=rpen
-		res=sqrt(sum(rf**2))/ne
+		write(3,*) '-----fpen------'
+		do i=1,ndof
+		write(3,*) fpen(i)
+		enddo
+		write(5,*) '-----fint------'
+		do i=1,ndof
+		write(5,*) fint(i)
+		enddo
+		write(21,*) '-----fkin------'
 		do i=1,ndof
 		write(21,*) fkin(i)
 		enddo
+		rf(1:ndof)=fext-fint-fpen-fkin
+		rf(ndof+1:nee)=rpen
+		res=sqrt(sum(rf**2))/ne
+
 		write(21,*) '-'
 
 		write(12,*) res
@@ -213,23 +213,17 @@ do t=1,tend
 		write(4,*) '-----'
 		write(*,*) INFO
 		mlagnew=mlagnew+rf(ndof+1:ndof+ng)
-			do i=1,nn
-				write(3,*) dnew(nsd*(i-1)+1)+xref(nsd*(i-1)+1), dnew(nsd*(i-1)+2)+xref(nsd*(i-1)+2)
-			enddo
-				write(3,*) '-------------'
-		if (w .ge. 2) then
-		stop
-		endif
 	enddo
-	stop
-
-	write(1,*) '-------------'
 	dis=dnew
 	vel=vnew
 	acc=anew
 	mlag=mlagnew
+do i=1,nn
+	write(22,70) dnew(nsd*(i-1)+1)+xref(nsd*(i-1)+1), dnew(nsd*(i-1)+2)+xref(nsd*(i-1)+2)
+enddo
+	write(*,*)
 enddo	
-
+70 format(f10.4,x,f10.4) 
 !dallocate variables
 !deallocate(xref)
 !deallocate(dis)
