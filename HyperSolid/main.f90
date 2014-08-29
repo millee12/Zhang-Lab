@@ -64,6 +64,9 @@ call getM(nsd,dt,beta,gamma,rho,ndof,ngp,eldof,nen,ne,detjac,ien,shp,Mass,km)
 acc=fext-fint
 mtmp=Mass
 call dgesv(ndof, 1, mtmp, ndof, IPIV, acc, ndof, INFO )
+!write initial configuration
+t=0
+call paraout(ne,nen,t,nsd,nn,ndof,dnew,xref,solid_con)
 !Time Loop
 do t=1,tend
 	write(*,*) 't=', t
@@ -83,7 +86,7 @@ do t=1,tend
         anew=(1/(beta*dt**2))*(dnew-dtil)
         vnew=vtil+gamma*dt*anew
 		!internal forces and tangent stiffness matrix
-		call s_int(nee,nsd,nn,nen,ne,ngp,ndof,eldof,ng,rc1,rc2,kappa,xref,dnew,nx,detjac,ien,fint,ka)
+		call s_int(nee,nsd,nn,nen,ne,ngp,ndof,eldof,ng,rc1,rc2,kappa,xref,dnew,nx,detjac,ien,fint,ka,sel)
 		call s_kin(nee,ndof,anew,Mass,km,fkin,ka)
 		call s_pen(ndof,nee,ng,dnew,gdof,gx,kappa,mlagnew,rpen,fpen,ka)
 		write(3,*) '-----fpen------'
@@ -130,6 +133,6 @@ do t=1,tend
 	vel=vnew
 	acc=anew
 	mlag=mlagnew
-	call paraout(ne,nen,t,nsd,nn,ndof,dnew,xref,solid_con)
+	call paraout(ne,nen,t,nsd,nn,ndof,dnew,xref,solid_con,sel)
 enddo	
 end program main

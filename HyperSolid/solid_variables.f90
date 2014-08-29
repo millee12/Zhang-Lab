@@ -1,7 +1,6 @@
 module solid_variables
   implicit none
   save
-  
   real(8),dimension(1:3) :: solid_scale  !...scale the size of the structure
   integer,parameter :: nsurface = 4
   integer :: nn_solid  ,ne_solid
