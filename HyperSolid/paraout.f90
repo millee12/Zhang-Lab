@@ -26,17 +26,17 @@ write(22,96)'CELL_DATA',ne
 write(22,97)'SCALARS','sxx','float',1
 write(22,80)'LOOKUP_TABLE default'
 do i=1,ne
-	write(22,98) sel(1,ne)
+	write(22,98) sel(1,i)
 enddo
 write(22,97)'SCALARS','syy','float',1
 write(22,80)'LOOKUP_TABLE default'
 do i=1,ne
-	write(22,98) sel(2,ne)
+	write(22,98) sel(2,i)
 enddo
 write(22,97)'SCALARS','sxy','float',1
 write(22,80)'LOOKUP_TABLE default'
 do i=1,ne
-	write(22,98) sel(3,ne)
+	write(22,98) sel(3,i)
 enddo
 70 format(f10.4,f10.4,f10.4) 
 20 format(I5.5) 

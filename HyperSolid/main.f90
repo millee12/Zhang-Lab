@@ -13,6 +13,7 @@ nrng_solid=2
 allocate(bc_solid(nrng_solid,2))
 bc_solid(1,2)=10100
 bc_solid(2,2)=10000
+bf(:)=[1.0d2,0.0d0]
 call read_abaqus_solid
 call readien_solid(solid_con,ne,nen,mtype)
 do el=1,ne
@@ -37,9 +38,6 @@ do a=1,nn
 	xref(p)=xyz(a,1)
 	xref(q)=xyz(a,2)
 enddo
-open(unit=5,file='fint.out')
-open(unit = 21, file = 'fkin.out')
-open(unit = 3, file = 'fpen.out')
 open(unit = 12, file = 'residual.out')
 open(unit=10,file='dg.out')
 open(unit=4,file='d.out')
@@ -58,8 +56,10 @@ rc2=0.0d0
 kappa=1.6667d5
 !save shape functions and derivatives
 call svshp(ndof,eldof,nen,nsd,ngp,ne,ien,xref,nx,detjac,shp)
-!save mass matrix and kinematic stiffness
-call getM(nsd,dt,beta,gamma,rho,ndof,ngp,eldof,nen,ne,detjac,ien,shp,Mass,km)
+!save mass matrix and kinematic stiffness and add body forces
+call getM(nsd,dt,beta,gamma,rho,bf,ndof,ngp,eldof,nen,ne,detjac,ien,shp,Mass,km,fext)
+write(*,*) fext 
+stop
 !initial acceleration
 acc=fext-fint
 mtmp=Mass
@@ -89,22 +89,9 @@ do t=1,tend
 		call s_int(nee,nsd,nn,nen,ne,ngp,ndof,eldof,ng,rc1,rc2,kappa,xref,dnew,nx,detjac,ien,fint,ka,sel)
 		call s_kin(nee,ndof,anew,Mass,km,fkin,ka)
 		call s_pen(ndof,nee,ng,dnew,gdof,gx,kappa,mlagnew,rpen,fpen,ka)
-		write(3,*) '-----fpen------'
-		do i=1,ndof
-		write(3,*) fpen(i)
-		enddo
-		write(5,*) '-----fint------'
-		do i=1,ndof
-		write(5,*) fint(i)
-		enddo
-		write(21,*) '-----fkin------'
-		do i=1,ndof
-		write(21,*) fkin(i)
-		enddo
 		rf(1:ndof)=fext-fint-fpen-fkin
 		rf(ndof+1:nee)=rpen
 		res=sqrt(sum(rf**2))/ne
-		write(21,*) '-'
 		write(12,*) res
 		write(10,*) '----residual------'
 		do i=1,nee
@@ -116,14 +103,7 @@ do t=1,tend
 			write(*,*) INFO
 			stop
 		endif
-		write(10,*) '----increments------'
-		do i=1,nee
-			write(10,*) rf(i)
-		enddo
 		dnew=dnew+rf(1:ndof)
-		write(4,*) dnew
-		write(4,*) '-----'
-		
 		mlagnew=mlagnew+rf(ndof+1:ndof+ng)
 	enddo
 	if (w .gt. 0) then

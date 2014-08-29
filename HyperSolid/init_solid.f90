@@ -42,7 +42,7 @@ real(8) :: res
 !lapack solver feedback
 real(8), allocatable :: IPIV(:)
 !displacement and velocity guesses
-real(8), allocatable :: dtil(:),vtil(:)
+real(8), allocatable :: dtil(:),vtil(:),bf(:)
 !lagrange multiplier, displacement, velocity, and acceleration updates
 real(8), allocatable :: mlagnew(:),dnew(:),vnew(:),anew(:)
 !previous displacement and velocity

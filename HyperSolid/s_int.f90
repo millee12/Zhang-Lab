@@ -34,7 +34,7 @@ do el=1,ne
 		sint(:)=sint(:)+matmul(transpose(BL),pk2)*detjac(el)
 		kl(:,:)=kl(:,:)+matmul(transpose(BL),matmul(CMR,BL))*detjac(el)
         knl(:,:)=knl(:,:)+matmul(transpose(BNL),matmul(ssuper,BNL))*detjac(el)
-       	sel(:,el)=	sel(:,el)+(1.0d0/ngp)*pk2
+       	sel(:,el)=	sel(:,el)+(1.0d0/ngp)*pk2(:)
 	enddo
 	do dof1=1,eldof
 		p=ien(dof1,el)

@@ -3,7 +3,7 @@ implicit none
 integer :: file,ien(eldof,ne),ne,ng,stat,dof,nen,tmpgdof(ndof),nsd,ndof,eldof,ng_true(ndof)
 integer,allocatable :: gdof(:)
 integer :: a(nen),b,el,bc,p,q,i,j,c
-real(8) :: fext(ndof)
+real(8) :: fext(ndof),bf(nsd)
 ng=0
 ng_true(:)=0
 file=11
