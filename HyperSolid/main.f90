@@ -1,103 +1,16 @@
 !Main File to test Solid Solver Solid Solver
 program main 
+use init_solid
 use solid_variables
 use mesh_convert_variables
 use meshgen_solid
-implicit none
-!total: dimensions, nodes, nodes/element, elements,
-!gauss points,time,essential BCS
-integer :: nsd=2,nn=9,nen=4,ne=4,ngp=4,tend=1000,ng=3
-!timestep
-real(8) :: dt=1.0d-3,beta=0.25d0,gamma=0.5d0,tol=1.0d-6
-!=====================
-!total: global degrees of freedom,element degrees of freedom
-integer :: ndof,eldof,file
-!reference config,displacements,residual AND delta d
-real(8),allocatable :: xref(:),dis(:),vel(:),acc(:),rf(:),xyz(:,:)
-!element dof to global dof
-integer,allocatable :: ien(:,:),solid_con(:,:),mtype(:)
-!=====================
-!counters
-integer :: i,j,gp,a,b,p,q,el,t,w
-!=====================
-!shape function derivative dN/dX, 
-!mapping determinant (not detF), eternal force
-real(8), allocatable :: shp(:,:,:),nx(:,:,:,:),detjac(:),fext(:)
-!=====================
-!For lagrange multiplier force:
-!penalty force, prescribed displacements,lagrange multiplier, 
-!essential BC residual, augmented stiffness matrix
-real(8),allocatable :: fpen(:),gx(:),mlag(:),rpen(:),ka(:,:)
-integer,allocatable :: gdof(:),tmpgdof(:,:)
-!=====================
-!For the internal forces (calculated using Mooney-Rivlin):
-!internal force,tangent stiffness
-real(8),allocatable :: fint(:),kt(:,:)
-real(8) :: rc1,rc2,kappa
-!=====================
-!For the kinematic forces:
-!kinematic force,kinematic stiffness
-real(8),allocatable :: fkin(:),km(:,:),Mass(:,:),mtmp(:,:)
-real(8) :: rho=1.0d0
-!=====================
-!Solver
-real(8) :: res
-!lapack solver feedback
-real(8), allocatable :: IPIV(:)
-!displacement and velocity guesses
-real(8), allocatable :: dtil(:),vtil(:)
-!lagrange multiplier, displacement, velocity, and acceleration updates
-real(8), allocatable :: mlagnew(:),dnew(:),vnew(:),anew(:)
-!previous displacement and velocity
-real(8), allocatable :: uold(:),mlagold(:)
-!lapack solver feedback, number of unknowns in Ax=b
-integer :: INFO,nee
-!=====================
 ndof=nn*nsd
 eldof=nen*nsd
 nee=ndof+ng
 !allocate variables
-allocate(xref(ndof))
-allocate(dis(ndof))
-allocate(rf(nee))
-allocate(ien(eldof,ne))
-allocate(shp(0:nsd,nen,ngp))
-allocate(nx(nen,nsd,ngp,ne))
-allocate(detjac(ne))
-allocate(fext(ndof))
-allocate(fpen(ndof))
-allocate(mlag(ng))
-allocate(rpen(ng))
-allocate(tmpgdof(ndof,ndof))
-allocate(ka(nee,nee))
-allocate(fint(ndof))
-allocate(kt(ndof,ndof))
-allocate(IPIV(nee))
-allocate(fkin(ndof))
-allocate(km(ndof,ndof))
-allocate(Mass(ndof,ndof))
-allocate(mtmp(ndof,ndof))
-allocate(vel(ndof))
-allocate(acc(ndof))
-allocate(mlagnew(ng))
-allocate(dnew(ndof))
-allocate(vnew(ndof))
-allocate(anew(ndof))
-allocate(dtil(ndof))
-allocate(vtil(ndof))
-!new
-allocate(xyz(nn,nsd))
-allocate(solid_con(ne,nen))
-allocate(mtype(ne))
-!!!!!!!!!!!!!!!!!!!!
-!write(*,*) 'input nrng'
-!read(*,*) nrng_solid
+include 'all_solid.FOR'
 nrng_solid=2
 allocate(bc_solid(nrng_solid,2))
-!do i=1,nrng_solid
-!	write(*,*) 'input', i ,'BC'
-!	read(*,*) bc_solid(i,2)
-!enddo
 bc_solid(1,2)=10100
 bc_solid(2,2)=10000
 call read_abaqus_solid
@@ -130,11 +43,6 @@ open(unit = 3, file = 'fpen.out')
 open(unit = 12, file = 'residual.out')
 open(unit=10,file='dg.out')
 open(unit=4,file='d.out')
-open(unit=22,file='xyz.out')
-! Mesh Information
-!fext(:)=0.0d0
-!fext(3)=5.0d2
-!fext(7)=5.0d2
 !Initial Conditions
 dis(:)=0.0d0
 vel(:)=0.0d0
@@ -152,7 +60,6 @@ kappa=1.6667d5
 call svshp(ndof,eldof,nen,nsd,ngp,ne,ien,xref,nx,detjac,shp)
 !save mass matrix and kinematic stiffness
 call getM(nsd,dt,beta,gamma,rho,ndof,ngp,eldof,nen,ne,detjac,ien,shp,Mass,km)
-
 !initial acceleration
 acc=fext-fint
 mtmp=Mass
@@ -172,7 +79,7 @@ do t=1,tend
 	do while ((res .ge. tol) .and. (w .le. 100))
 		ka(:,:)=0.0d0
 	 	w=w+1
-		write(*,*) 'w= ',w
+		!write(*,*) 'w= ',w
         anew=(1/(beta*dt**2))*(dnew-dtil)
         vnew=vtil+gamma*dt*anew
 		!internal forces and tangent stiffness matrix
@@ -194,16 +101,18 @@ do t=1,tend
 		rf(1:ndof)=fext-fint-fpen-fkin
 		rf(ndof+1:nee)=rpen
 		res=sqrt(sum(rf**2))/ne
-
 		write(21,*) '-'
-
 		write(12,*) res
 		write(10,*) '----residual------'
 		do i=1,nee
 			write(10,*) rf(i)
 		enddo
-
 		call dgesv(nee, 1, ka, nee, IPIV, rf, nee, INFO )
+		if (INFO .ne. 0) then
+			write(*,*) 'error: unable to solve for incremental displacements'
+			write(*,*) INFO
+			stop
+		endif
 		write(10,*) '----increments------'
 		do i=1,nee
 			write(10,*) rf(i)
@@ -211,34 +120,16 @@ do t=1,tend
 		dnew=dnew+rf(1:ndof)
 		write(4,*) dnew
 		write(4,*) '-----'
-		write(*,*) INFO
+		
 		mlagnew=mlagnew+rf(ndof+1:ndof+ng)
 	enddo
+	if (w .gt. 0) then
+		write(*,*) 'succesful exit after ', w, 'iterations'
+	endif
 	dis=dnew
 	vel=vnew
 	acc=anew
 	mlag=mlagnew
-do i=1,nn
-	write(22,70) dnew(nsd*(i-1)+1)+xref(nsd*(i-1)+1), dnew(nsd*(i-1)+2)+xref(nsd*(i-1)+2)
-enddo
-	write(*,*)
+	call paraout(ne,nen,t,nsd,nn,ndof,dnew,xref,solid_con)
 enddo	
-70 format(f10.4,x,f10.4) 
-!dallocate variables
-!deallocate(xref)
-!deallocate(dis)
-!deallocate(rf)
-!deallocate(ien)
-!deallocate(nx)
-!deallocate(detjac)
-!deallocate(fext)
-!deallocate(fpen)
-!deallocate(gx)
-!deallocate(mlag)
-!deallocate(rpen)
-!deallocate(ka)
-!deallocate(gdof)
-!deallocate(fint)
-!deallocate(kt)
-!deallocate(IPIV)
 end program main
