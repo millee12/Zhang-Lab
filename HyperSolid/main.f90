@@ -58,8 +58,6 @@ kappa=1.6667d5
 call svshp(ndof,eldof,nen,nsd,ngp,ne,ien,xref,nx,detjac,shp)
 !save mass matrix and kinematic stiffness and add body forces
 call getM(nsd,dt,beta,gamma,rho,bf,ndof,ngp,eldof,nen,ne,detjac,ien,shp,Mass,km,fext)
-write(*,*) fext 
-stop
 !initial acceleration
 acc=fext-fint
 mtmp=Mass
