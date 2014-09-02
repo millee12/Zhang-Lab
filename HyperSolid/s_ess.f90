@@ -43,7 +43,7 @@ read(11,*,end=150) el, a(1:nen), bc
 			else
 					dof=nsd*(c-1)+1
 					p=ien(dof,el)
-					fext(p)=fext(p)+2.5d3
+					fext(p)=fext(p)+0.0d0
 			endif
 		endif	
 	enddo
@@ -57,7 +57,7 @@ enddo
 		enddo
 	enddo
 where (tmpgdof .ne. 0)
-ng_true=1
+	ng_true=1
 end where
 
 ng=sum(ng_true)

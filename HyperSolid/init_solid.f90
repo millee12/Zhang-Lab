@@ -3,9 +3,9 @@ implicit none
 save
 !total: dimensions, nodes, nodes/element, elements,
 !gauss points,time,essential BCS
-integer :: nsd=2,nn=9,nen=4,ne=4,ngp=4,tend=1000,ng=3
+integer :: nsd=2,nn=21,nen=4,ne=12,ngp=4,tend=1000,ng
 !timestep
-real(8) :: dt=1.0d-4,beta=0.25d0,gamma=0.5d0,tol=1.0d-6
+real(8) :: dt=1.0d-3,beta=0.25d0,gamma=0.5d0,tol=1.0d-6
 !=====================
 !total: global degrees of freedom,element degrees of freedom
 integer :: ndof,eldof,file
