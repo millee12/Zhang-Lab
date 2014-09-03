@@ -16,7 +16,6 @@ bf(:)=[0.0d0,-5.0d0]
 call read_abaqus_solid
 call readien_solid(solid_con,ne,nen,mtype)
 do el=1,ne
-	!write(*,*) solid_con(el,:)
 	do a=1,nen
 		if (a .gt. 2) then
 			b=a-2
@@ -72,7 +71,7 @@ mtmp=Mass
 call dgesv(ndof, 1, mtmp, ndof, IPIV, acc, ndof, INFO )
 !write initial configuration
 t=0
-call paraout(ne,nen,t,nsd,nn,ndof,dnew,xref,solid_con,sel)
+call paraout(ne,nen,t,nsd,nn,ndof,dnew,xref,solid_con,sel,vel)
 !Time Loop
 do t=1,tend
 	write(*,*) 't=', t
@@ -120,6 +119,6 @@ do t=1,tend
 	vel=vnew
 	acc=anew
 	mlag=mlagnew
-	call paraout(ne,nen,t,nsd,nn,ndof,dnew,xref,solid_con,sel)
+	call paraout(ne,nen,t,nsd,nn,ndof,dnew,xref,solid_con,sel,vel)
 enddo	
 end program main
