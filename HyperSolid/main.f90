@@ -120,17 +120,6 @@ do t=1,tend
 	vel=vnew
 	acc=anew
 	mlag=mlagnew
-!if (t .ge. 3) then
-!	write(*,*) dis
-!	write(*,*) '---'
-!	write(*,*) vel
-!!	write(*,*) acc
-!	write(*,*) '---'
-!	write(*,*) nee
-!	write(*,*) '---'
-!
-!	stop
-!endif 
 	call paraout(ne,nen,t,nsd,nn,ndof,dnew,xref,solid_con,sel)
 enddo	
 end program main
