@@ -6,18 +6,16 @@ use mesh_convert_variables
 use meshgen_solid
 ndof=nn*nsd
 eldof=nen*nsd
-nee=ndof+ng
 !allocate variables
 include 'all_solid.FOR'
-nrng_solid=2
+nrng_solid=1
 allocate(bc_solid(nrng_solid,2))
-bc_solid(1,2)=10100
-bc_solid(2,2)=10000
-bf(:)=[1.0d2,0.0d0]
+bc_solid(1,2)=10110
+!bc_solid(2,2)=10000
+bf(:)=[0.0d0,-5.0d0]
 call read_abaqus_solid
 call readien_solid(solid_con,ne,nen,mtype)
 do el=1,ne
-	!write(*,*) solid_con(el,:)
 	do a=1,nen
 		if (a .gt. 2) then
 			b=a-2
@@ -47,9 +45,18 @@ vel(:)=0.0d0
 fint(:)=0.0d0
 !specify essential boundaries
 call s_ess(nsd,nen,ne,ndof,eldof,ien,ng,tmpgdof,fext)
+allocate(mlagnew(ng))
+allocate(mlag(ng))
+allocate(rpen(ng))
 allocate(gdof(ng))
 allocate(gx(ng))
+nee=ndof+ng
+allocate(rf(nee))
+allocate(IPIV(nee))
+allocate(ka(nee,nee))
 call s_gdof(ndof,ng,tmpgdof,gdof,gx,mlag)
+!write(*,*) gdof
+!stop
 !MR constants
 rc1=8.6207d3
 rc2=0.0d0
@@ -64,10 +71,11 @@ mtmp=Mass
 call dgesv(ndof, 1, mtmp, ndof, IPIV, acc, ndof, INFO )
 !write initial configuration
 t=0
-call paraout(ne,nen,t,nsd,nn,ndof,dnew,xref,solid_con)
+call paraout(ne,nen,t,nsd,nn,ndof,dnew,xref,solid_con,sel,vel)
 !Time Loop
 do t=1,tend
 	write(*,*) 't=', t
+	write(*,*) ng
     ! Predict
     dtil=dis+dt*vel+(dt**2/2.0d0)*(1.0d0-2.0d0*beta)*acc
     vtil=vel+(1.0d0-gamma)*dt*acc
@@ -104,13 +112,13 @@ do t=1,tend
 		dnew=dnew+rf(1:ndof)
 		mlagnew=mlagnew+rf(ndof+1:ndof+ng)
 	enddo
-	if (w .gt. 0) then
+	if (w .gt. 1) then
 		write(*,*) 'succesful exit after ', w, 'iterations'
 	endif
 	dis=dnew
 	vel=vnew
 	acc=anew
 	mlag=mlagnew
-	call paraout(ne,nen,t,nsd,nn,ndof,dnew,xref,solid_con,sel)
+	call paraout(ne,nen,t,nsd,nn,ndof,dnew,xref,solid_con,sel,vel)
 enddo	
 end program main
