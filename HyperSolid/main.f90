@@ -61,6 +61,9 @@ call s_gdof(ndof,ng,tmpgdof,gdof,gx,mlag)
 rc1=8.6207d3
 rc2=0.0d0
 kappa=1.6667d5
+!Damping Constants
+d1=0.25d0
+d2=3.65d-4
 !save shape functions and derivatives
 call svshp(ndof,eldof,nen,nsd,ngp,ne,ien,xref,nx,detjac,shp)
 !save mass matrix and kinematic stiffness and add body forces
@@ -92,10 +95,11 @@ do t=1,tend
         anew=(1/(beta*dt**2))*(dnew-dtil)
         vnew=vtil+gamma*dt*anew
 		!internal forces and tangent stiffness matrix
-		call s_int(nee,nsd,nn,nen,ne,ngp,ndof,eldof,ng,rc1,rc2,kappa,xref,dnew,nx,detjac,ien,fint,ka,sel)
+		call s_int(nee,nsd,nn,nen,ne,ngp,ndof,eldof,ng,rc1,rc2,kappa,xref,dnew,nx,detjac,ien,fint,kt,ka,sel)
+		call s_dam(ndof,d1,d2,vnew,Mass,kt,fdam)
 		call s_kin(nee,ndof,anew,Mass,km,fkin,ka)
 		call s_pen(ndof,nee,ng,dnew,gdof,gx,kappa,mlagnew,rpen,fpen,ka)
-		rf(1:ndof)=fext-fint-fpen-fkin
+		rf(1:ndof)=fext-fint-fpen-fkin-fdam
 		rf(ndof+1:nee)=rpen
 		res=sqrt(sum(rf**2))/ne
 		write(12,*) res
