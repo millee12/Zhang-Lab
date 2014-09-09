@@ -1,4 +1,4 @@
-subroutine s_int(nee,nsd,nnode,nen,ne,ngp,ndof,eldof,ng,rc1,rc2,kappa,xref,dis,nx,detjac,ien,fint,ka,sel)
+subroutine s_int(nee,nsd,nnode,nen,ne,ngp,ndof,eldof,ng,rc1,rc2,kappa,xref,dis,nx,detjac,ien,fint,kt,ka,sel)
 implicit none
 !For the internal forces (calculated using Mooney-Rivlin)
 integer :: nsd,nnode,nen,ne,ngp,ndof,eldof,ng,nee

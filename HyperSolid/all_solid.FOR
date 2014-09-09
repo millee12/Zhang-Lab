@@ -28,3 +28,5 @@ allocate(solid_con(ne,nen))
 allocate(mtype(ne))
 allocate(sel(3,ne))
 allocate(bf(nsd))
+
+allocate(fdam(ndof))

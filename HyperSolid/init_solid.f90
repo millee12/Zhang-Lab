@@ -37,6 +37,11 @@ real(8) :: rc1,rc2,kappa
 real(8),allocatable :: fkin(:),km(:,:),Mass(:,:),mtmp(:,:)
 real(8) :: rho=1.0d0
 !=====================
+!For the damping forces:
+!kinematic force,kinematic stiffness
+real(8),allocatable :: fdam(:)
+real(8) :: d1,d2
+!=====================
 !Solver
 real(8) :: res
 !lapack solver feedback
