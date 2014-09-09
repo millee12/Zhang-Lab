@@ -1,0 +1,165 @@
+restart =	0
+restart_freq =	2
+steady =    0
+stokes =    0
+hg_vol =    1
+taudt =     1
+static =    0
+conserve =  1
+
+ nn=        1680
+ ne=        3198
+
+nrng =    4
+nen =     3
+ndf =     3
+nsd =     2
+iquad =   2
+
+nit =      4
+nts =      1
+ntsbout =  20
+idisk =    00
+inner =    30
+outer =    3
+iscaling = 01
+maxconn =  60
+
+dt =      0.05
+t_start = 0.0
+alpha =   1.0
+
+fix =    1  0.0  0.0  -999   !bottom
+fix =    2  0.0  0.0  -999   !right
+fix =    3  0.1  0.0  -999   !top
+fix =    4  0.0  0.0  -999   !left
+
+landa_over_mu = 0.01
+
+initial =  +0.0 +0.0 +0.0
+
+gravity =    0.0    0.0     0.0
+interface =  1.0    1.0     1.0  !! if less than this set fi to 1.0
+
+vis_liq = 0.01     !! water 10-2g/cm.s, air 1.8e-2g/cm.s
+den_liq = 1.0	!! water 1.0g/cm^3, air 1.3e-3g/cm^3
+ref_lgt = 1.0
+ref_vel = 1.0
+ref_den = 1.0
+
+delta = 0 1.0   !! hg
+delta = 1 1.0   !! taum
+delta = 2 2.0   !! tauc
+delta = 3 1.0   !! ka
+delta = 4 0.0   !! turb
+delta = 5 1.5   !! smoothing
+delta = 6 0.5   !! interface (will change automatically)
+
+turb_kappa = 0.15
+ninit= 0        	! 0=not apply bc; 1=apply bc
+initdir = 1 		! 1=initial disp; 2=intial velocity
+
+iquad_solid= 2  	! number of qudrature points per element
+nen_solid= 4    	! number of nodes per element
+
+nsd_solid= 2 		! number of dimensions in the solid domain
+nrigid= 0 		! 0=deformable; 1=rigid body
+
+n_tec_ens= 0    	! output format: 0=ensight; 1=tecplot;(0 is only option)
+
+ndelta= 1 		! 1=RKPM(nonuniform)->the only option for now
+
+nnd= 441		! total number of nodes
+nume1= 400		! total number of elements
+nump= 1			! number of pressure nodes per element
+
+solid_scale= 1.0 1.0	! scaling the solid geometry (x,y,z)
+
+n_solid= 1 		! number of the same structure
+shift= 0.0d0 0.0d0 	! shift the position of the structure (x,y,z)
+
+ntfun= 3 		! load by time function type;
+
+numfn=0			! load assignment: 0=none, 1:apply load
+numeb=0			! number of type of loads (only if numfn>0,add more in the next lines)
+
+material_type= 1 	! 1=hyperelastic; 2=linear elastic material
+
+young_mod= 1.0d5	! Young modulus (elastic only)
+Poisson= 0.5		! Poisson ratio (elastic only)
+rc1= 3			! C1 constant (hyperelastic only)
+rc2= 0			! C2 constant (hyperelastic only)
+rk= 0.0			! Ck constant (hyperelastic only)
+
+density_solid= 0.0d0 	! Density different (solid-fluid)
+
+xviss= 0.0d0   		! Damping constant
+
+vnorm= 1.0d0 		! normalized velocity for all nodes
+fnorm= 1.0d0		! (not used now)
+
+xmg= 0.0d0 0.0d0	! gravity (x,y,z)
+
+Control information
+-------------------
+
+ Nodes........................(nn) =    1680
+ Elements.....................(ne) =    3198
+ Total integration points..(nquad) =       3
+ Time steps....................(nts) =     1
+ Iterations....................(nit) =     4
+ Time steps b/output.......(ntsbout) =    20
+ Space dimensions..............(nsd) =     2
+ Degrees of freedom............(ndf) =     3
+ Number of element nodes.......(nen) =     3
+ Integration points..........(iquad) =     2
+ Scaling..................(iscaling) =     1
+ Inner GMRES iterations......(inner) =    30
+ Outer GMRES iterations......(outer) =     3
+ Restart...................(restart) =     0
+ Stokes.....................(stokes) =    no
+ Steady.....................(steady) =    no
+ Mass conservation........(conserve) =   yes
+ Static Problem.............(static) =    no
+ Length based on volume.....(hg_vol) =   yes
+ Dt in tau...................(taudt) =   yes
+ 2D computation...............(twod) =    no
+ Time step.................=  0.50000000E-01
+ Initial time..............=  0.00000000E+00
+ Alpha.....................=  0.10000000E+01
+ Reference length..........=  0.10000000E+01
+ Reference velocity........=  0.10000000E+01
+ Reference density.........=  0.10000000E+01
+ Density of liquid.........=  0.10000000E+01
+ Viscosity of liquid.......=  0.10000000E-01
+ Gravity in x..............=  0.00000000E+00
+ Gravity in y..............=  0.00000000E+00
+ Gravity in z..............=  0.00000000E+00
+ Interface in x............=  0.10000000E+01
+ Interface in y............=  0.10000000E+01
+ Interface in z............=  0.00000000E+00
+ Delta_0.............. =  0.10000000E+01
+ Delta_1.............. =  0.10000000E+01
+ Delta_2.............. =  0.20000000E+01
+ Delta_3.............. =  0.10000000E+01
+ Delta_5.............. =  0.15000000E+01
+ Delta_6.............. =  0.50000000E+00
+
+No turbulence modeling
+
+Boundary condition information
+------------------------------
+
+ boundary no.  1           1        1        0
+ boundary no.  2           1        1        0
+ boundary no.  3           1        1        0
+ boundary no.  4           1        1        0
+ Boundary no.  1       0.000    0.000 -999.000
+ Boundary no.  2       0.000    0.000 -999.000
+ Boundary no.  3       0.100    0.000 -999.000
+ Boundary no.  4       0.000    0.000 -999.000
+
+Initial condition information
+-----------------------------
+
+ Initial value :     0.000    0.000    0.000 -999.000
