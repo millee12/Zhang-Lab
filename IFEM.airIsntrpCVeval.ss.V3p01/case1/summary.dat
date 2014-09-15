@@ -1,1 +1,186 @@
 restart =       -999	! restart info
+<<<<<<< HEAD
+=======
+restart_freq =	10	! restart freq
+steady =    0		! steady flow option
+stokes =    0		! stoke flow option
+hg_vol =    1		! hg
+taudt =     1		! taudt	
+static =    0		! static
+conserve =  1		! conserve
+ nn=       1701		! # of nodes in fluid region
+ ne=       1600	! # of elements in fluid region
+nrng =    4		! # of boundary in fluid region
+nen =     4		! # of nodes per element
+ndf =     3		! # of degree of freedom
+nsd =     2		! # of dimension
+iquad =   2		! # of gausian points per element
+nit =      6		! # of iteration per time step
+nts =      500		! # of time steps
+ntsbout =  1		! output frequency
+idisk =    00 		! ...
+inner =    80		! # of inner loop for GMRES
+outer =    5		! # of outer loop for GMRES
+iscaling = 01		! scalling factor
+maxconn =  80		! max number of solid nodes in support region for RKPM interpolation
+dt =      1.00d-2	! time increment
+t_start = 0.0		! ...
+alpha =   1.0		! ...
+fix1 =    1 		! bottom BC
+fix = 	 0.0 		! bottom BC vel_x
+fix = 	 0.0 		! bottom BC vel_y
+fix = 	 -999     	! bottom BC Pre
+
+fix2 =    2 		! right BC
+fix =   -999 		! right BC vel_x
+fix =   -999  		! right BC vel_y
+fix =    -999	   	! right BC Pre
+
+fix3 =    3  		! top BC
+fix  =    0.0  		! tpo  BC vel_x
+fix =     0.0  		! top BC vel_y
+fix =     -999 		  !top Pre
+
+fix =    4  		! left BC
+fix =   10.0  		! left BC vel_x
+fix =   0.0  		! left BC vel_y
+fix =    -999  		 !left Pre
+
+edge_inflow = 0 ! edge index of nature boundary condition
+ne_inflow = 100 ! number of element of the nature boundary condition
+pin = 10000 ! constant pressure at the inflow
+ptotflag = 0 ! flag for use total pressure or not 1---> yes; 0 ---> no
+
+landa_over_mu = 0.01	! ...
+initial =  +0.0 +0.0 +0.0	! initial guess for velocity field
+gravity =    0.0    0.0     0.0 ! gravity
+interface =  1.0    1.0     1.0  !! if less than this set fi to 1.0
+vis_liq = 1.8d-4     !! water 10-2g/cm.s, air 1.8e-2g/cm.s
+den_liq = 1.3d-3	!! water 1.0g/cm^3, air 1.3e-3g/cm^3
+ref_lgt = 1.0     	 !...
+ref_vel = 1.0		!...
+ref_den = 1.0		!...
+delta = 0.0 1.0   !! hg
+delta = 1 1.0   !! taum
+delta = 2 2.0   !! tauc
+delta = 3 1.0   !! ka
+delta = 4 0.0   !! turb
+delta = 5 1.5   !! smoothing
+delta = 6 0.5   !! interface (will change automatically)
+turb_kappa = 0.15 ! ...
+ninit= 990        	! 0=not apply bc; 1=apply bc
+initdir = 1 		! 1=initial disp; 2=intial velocity
+
+iquad_solid= 2  	! number of qudrature points per element
+nen_solid=  4   	! number of nodes per element
+
+nsd_solid= 2 		! number of dimensions in the solid domain
+nrigid= 0 		! 0=deformable; 1=rigid body
+
+n_tec_ens= 0    	! output format: 0=ensight; 1=tecplot;(0 is only option)
+
+ndelta= 1		! 1=RKPM(nonuniform)->the only option for now
+
+nnd= 15		! total number of nodes
+nume1= 8			! total number of elements
+nump= 1			! number of pressure nodes per element
+solid_scale= 1.0 1.0	! scaling the solid geometry (x,y,z)
+
+n_solid= 1		! number of the same structure
+nep1= 8               ! number of elements for solid part I
+nep2= 0               ! number of elements for solid part II
+shift= 4.0d0 0.0d0 	! shift the position of the structure I (x,y,z)
+ntfun= 3 		! load by time function type;
+
+numfn=0			! load assignment: 0=none, 1:apply load
+numeb=0			! number of type of loads (only if numfn>0,add more in the next lines)
+
+material_type= 2 	! 1=hyperelastic; 2=linear elastic material
+young_mod= 1.0d3 4.0d4	! Young modulus (elastic only)
+Poisson= 0.3		! Poisson ratio (elastic only)
+rc1= 200 800			! C1 constant (hyperelastic only)
+rc2= 100.0 400.0			! C2 constant (hyperelastic only)
+rk= 100			! Ck constant (hyperelastic only)
+density_solid= 1.0d0 	! Density different (solid-fluid)
+xviss= 0.0d0   		! Damping constant
+vnorm= 1.0d0 		! normalized velocity for all nodes
+fnorm= 1.0d0		! (not used now)
+xmg= 0.0d0 0.0d0 	! gravity (x,y,z)
+ne_sbc=12		! interface element number (length sbc_solid)
+nn_sbc=12		! interface node number (length scnode_solid
+node_sfcon=0 		! solid-fluid connected nodes
+
+Control information
+-------------------
+
+ Nodes........................(nn) =    1701
+ Elements.....................(ne) =    1600
+ Total integration points..(nquad) =       4
+ Time steps....................(nts) =   500
+ Iterations....................(nit) =     6
+ Time steps b/output.......(ntsbout) =     1
+ Space dimensions..............(nsd) =     2
+ Degrees of freedom............(ndf) =     3
+ Number of element nodes.......(nen) =     4
+ Integration points..........(iquad) =     2
+ Scaling..................(iscaling) =     1
+ Inner GMRES iterations......(inner) =    80
+ Outer GMRES iterations......(outer) =     5
+ Restart...................(restart) =  -999
+ Stokes.....................(stokes) =    no
+ Steady.....................(steady) =    no
+ Mass conservation........(conserve) =   yes
+ Static Problem.............(static) =    no
+ Length based on volume.....(hg_vol) =   yes
+ Dt in tau...................(taudt) =   yes
+ 2D computation...............(twod) =    no
+ Time step.................=  0.10000000E-01
+ Initial time..............=  0.00000000E+00
+ Alpha.....................=  0.10000000E+01
+ Reference length..........=  0.10000000E+01
+ Reference velocity........=  0.10000000E+01
+ Reference density.........=  0.10000000E+01
+ Density of liquid.........=  0.13000000E-02
+ Viscosity of liquid.......=  0.18000000E-03
+ Gravity in x..............=  0.00000000E+00
+ Gravity in y..............=  0.00000000E+00
+ Gravity in z..............=  0.00000000E+00
+ Interface in x............=  0.10000000E+01
+ Interface in y............=  0.10000000E+01
+ Interface in z............=  0.00000000E+00
+ Delta_0.............. =  0.10000000E+01
+ Delta_1.............. =  0.10000000E+01
+ Delta_2.............. =  0.20000000E+01
+ Delta_3.............. =  0.10000000E+01
+ Delta_5.............. =  0.15000000E+01
+ Delta_6.............. =  0.50000000E+00
+
+No turbulence modeling
+
+Boundary condition information
+------------------------------
+
+ boundary no.  1           1        1        0
+ boundary no.  2           0        0        0
+ boundary no.  3           1        1        0
+ boundary no.  4           1        1        0
+ Boundary no.  1       0.000    0.000 -999.000
+ Boundary no.  2    -999.000 -999.000 -999.000
+ Boundary no.  3       0.000    0.000 -999.000
+ Boundary no.  4      10.000    0.000 -999.000
+
+Initial condition information
+-----------------------------
+
+ Initial value :     0.000    0.000    0.000 -999.000
+  
+ Volume of liquid......... =  0.16000000E+02
+ Minimum element length... =  0.99999900E-01
+ Maximum element length... =  0.10000020E+00
+ Minimum element volume... =  0.99999800E-02
+ Maximum element volume... =  0.10000041E-01
+  
+ TIME STEP =            1
+  
+  physical time =   0.0100000000 s
+>>>>>>> integrate

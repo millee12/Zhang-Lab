@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 partdmesh mien.in 8 
 rm partele.in
 rm partnode.in
@@ -9,4 +10,18 @@ mv mien.in.npart.8 partnode.in
 #rm partnode_solid.in
 #mv connectsolid.in.epart.8 partele_solid.in
 #mv connectsolid.in.npart.8 partnode_solid.in
+=======
+partdmesh mien.in 2 
+rm partele.in
+rm partnode.in
+mv mien.in.epart.2 partele.in
+mv mien.in.npart.2 partnode.in
+
+#Solid Mesh 
+partdmesh connectsolid.in 2
+rm partele_solid.in
+rm partnode_solid.in
+mv connectsolid.in.epart.2 partele_solid.in
+mv connectsolid.in.npart.2 partnode_solid.in
+>>>>>>> integrate
 

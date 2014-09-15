@@ -1,5 +1,6 @@
-subroutine solve_solid_disp(x,x_curr,kid,ien,node_sbc,xpre1,solid_prevel,solid_preacc,ien_sbc,&
-                            solid_stress,solid_bcvel,mtype)
+subroutine solve_solid_disp(x,x_curr,kid,ien,node_sbc,xpre1,solid_prevel,solid_preacc,solid_premlag,&
+                            ien_sbc,solid_stress,solid_bcvel,ng)
+                            
 ! subroutine to solve the solid displacement at every time step
 ! x  -- initial solid configuration
 ! x_curr --- current solid configuration
@@ -46,164 +47,134 @@ integer iq
 !-------------------------------------------------
 integer inner
 integer outer
+real(8) tol
 parameter (inner = 100) ! solid equation inner 50 should be sufficient
 parameter (outer = 10)  ! solid equation outer 5 should be sufficient
+parameter (tol = 1.0d-6)  ! solid equation outer 5 should be sufficient
 !-------------------------------------------------
 real(8) dg(nsd_solid,nn_solid) ! disp correction
 real(8) w(nsd_solid,nn_solid)  ! pre-conditioner
 real(8) p(nsd_solid,nn_solid)  ! residual vector
 real(8) res
 real(8) del
-integer i
+integer i,j,a
 real(8) time
 !----------------------------
         real(8) alpha
         real(8) beta
-        real(8) gama
+        real(8) gamma
 !----------------------------
+!added by Eric Miller
+integer :: k,ng,gx(ng),gdof(ng),ndof,nee
+real(8) :: ka(nsd_solid*nn_solid,nsd_solid*nn_solid)
+real(8) :: dis(nsd_solid*nn_solid)
+real(8) :: acc(nsd_solid*nn_solid)
+real(8) :: vel(nsd_solid*nn_solid)
+real(8) :: dtil(nsd_solid*nn_solid)
+real(8) :: vtil(nsd_solid*nn_solid)
+real(8) :: atil(nsd_solid*nn_solid)
+real(8) :: dnew(nsd_solid*nn_solid)
+real(8) :: vnew(nsd_solid*nn_solid)
+real(8) :: anew(nsd_solid*nn_solid)
+real(8) :: solid_premlag(nsd_solid*nn_solid)
+real(8) :: mlagnew(nsd_solid*nn_solid)
+real(8) :: fext(nsd_solid*nn_solid)
+real(8) :: fint(nsd_solid*nn_solid)
+real(8) :: fkin(nsd_solid*nn_solid)
+real(8) :: fpen(nsd_solid*nn_solid)
+real(8) :: fdam(nsd_solid*nn_solid)
+real(8) :: rf(nsd_solid*nn_solid)
+real(8) :: rpen(ng)
+ndof=nsd_solid*nn_solid
+nee=nn_solid*nsd_solid+ng
+!Newmark Method
 ! define the numerical parameters
-alpha = -0.05 ! -1/3 < alpha < 0 and alpha == 0 is Newmark method
-gama = (1.0 - 2.0 * alpha) * 0.5
-beta = ( (1.0 - alpha)**2 ) * 0.25
+beta=0.25d0
+gamma=0.5d0
 !beta = (1.0 - alpha**2 ) * 0.25
 !----------------------------------
-
-! Get sq for solid mesh to calculate sh in block_solid.f90
-if (nsd_solid == 3) then
-     do iq=1,nquad_solid
-                if(nen_solid.eq.4) then
-                  sq_solid(0,1,iq) = xq_solid(1,iq)
-                  sq_solid(0,2,iq) = xq_solid(2,iq)
-                  sq_solid(0,3,iq) = xq_solid(3,iq)
-                  sq_solid(0,4,iq) = 1 - xq_solid(1,iq) - xq_solid(2,iq) - xq_solid(3,iq)
-        else
-                  sq_solid(0,1,iq) = (1 - xq_solid(1,iq))   &
-                           * (1 - xq_solid(2,iq)) * (1 - xq_solid(3,iq)) / 8
-                  sq_solid(0,2,iq) = (1 + xq_solid(1,iq))   &
-                           * (1 - xq_solid(2,iq)) * (1 - xq_solid(3,iq)) / 8
-                  sq_solid(0,3,iq) = (1 + xq_solid(1,iq))   &
-                           * (1 + xq_solid(2,iq)) * (1 - xq_solid(3,iq)) / 8
-                  sq_solid(0,4,iq) = (1 - xq_solid(1,iq))   &
-                           * (1 + xq_solid(2,iq)) * (1 - xq_solid(3,iq)) / 8
-                  sq_solid(0,5,iq) = (1 - xq_solid(1,iq))   &
-                           * (1 - xq_solid(2,iq)) * (1 + xq_solid(3,iq)) / 8
-                  sq_solid(0,6,iq) = (1 + xq_solid(1,iq))   &
-                           * (1 - xq_solid(2,iq)) * (1 + xq_solid(3,iq)) / 8
-                  sq_solid(0,7,iq) = (1 + xq_solid(1,iq))   &
-                           * (1 + xq_solid(2,iq)) * (1 + xq_solid(3,iq)) / 8
-                  sq_solid(0,8,iq) = (1 - xq_solid(1,iq))   &
-                           * (1 + xq_solid(2,iq)) * (1 + xq_solid(3,iq)) / 8
-                  sq_solid(1,1,iq) = - (1 - xq_solid(2,iq)) * (1 - xq_solid(3,iq)) / 8
-                  sq_solid(1,2,iq) = + (1 - xq_solid(2,iq)) * (1 - xq_solid(3,iq)) / 8
-                  sq_solid(1,3,iq) = + (1 + xq_solid(2,iq)) * (1 - xq_solid(3,iq)) / 8
-                  sq_solid(1,4,iq) = - (1 + xq_solid(2,iq)) * (1 - xq_solid(3,iq)) / 8
-                  sq_solid(1,5,iq) = - (1 - xq_solid(2,iq)) * (1 + xq_solid(3,iq)) / 8
-                  sq_solid(1,6,iq) = + (1 - xq_solid(2,iq)) * (1 + xq_solid(3,iq)) / 8
-                  sq_solid(1,7,iq) = + (1 + xq_solid(2,iq)) * (1 + xq_solid(3,iq)) / 8
-                  sq_solid(1,8,iq) = - (1 + xq_solid(2,iq)) * (1 + xq_solid(3,iq)) / 8
-                  sq_solid(2,1,iq) = - (1 - xq_solid(1,iq)) * (1 - xq_solid(3,iq)) / 8
-                  sq_solid(2,2,iq) = - (1 + xq_solid(1,iq)) * (1 - xq_solid(3,iq)) / 8
-                  sq_solid(2,3,iq) = + (1 + xq_solid(1,iq)) * (1 - xq_solid(3,iq)) / 8
-                  sq_solid(2,4,iq) = + (1 - xq_solid(1,iq)) * (1 - xq_solid(3,iq)) / 8
-                  sq_solid(2,5,iq) = - (1 - xq_solid(1,iq)) * (1 + xq_solid(3,iq)) / 8
-                  sq_solid(2,6,iq) = - (1 + xq_solid(1,iq)) * (1 + xq_solid(3,iq)) / 8
-                  sq_solid(2,7,iq) = + (1 + xq_solid(1,iq)) * (1 + xq_solid(3,iq)) / 8
-                  sq_solid(2,8,iq) = + (1 - xq_solid(1,iq)) * (1 + xq_solid(3,iq)) / 8
-                  sq_solid(3,1,iq) = - (1 - xq_solid(1,iq)) * (1 - xq_solid(2,iq)) / 8
-                  sq_solid(3,2,iq) = - (1 + xq_solid(1,iq)) * (1 - xq_solid(2,iq)) / 8
-                  sq_solid(3,3,iq) = - (1 + xq_solid(1,iq)) * (1 + xq_solid(2,iq)) / 8
-                  sq_solid(3,4,iq) = - (1 - xq_solid(1,iq)) * (1 + xq_solid(2,iq)) / 8
-                  sq_solid(3,5,iq) = + (1 - xq_solid(1,iq)) * (1 - xq_solid(2,iq)) / 8
-                  sq_solid(3,6,iq) = + (1 + xq_solid(1,iq)) * (1 - xq_solid(2,iq)) / 8
-                  sq_solid(3,7,iq) = + (1 + xq_solid(1,iq)) * (1 + xq_solid(2,iq)) / 8
-                  sq_solid(3,8,iq) = + (1 - xq_solid(1,iq)) * (1 + xq_solid(2,iq)) / 8
-        endif
-          enddo
-elseif (nsd_solid == 2) then
-                  
-      do iq=1,nquad_solid
-                if(nen_solid==3) then
-                  sq_solid(0,1,iq) = xq_solid(1,iq)
-                  sq_solid(0,2,iq) = xq_solid(2,iq)
-                  sq_solid(0,3,iq) = 1 - xq_solid(1,iq) - xq_solid(2,iq) 
-        elseif (nen_solid==4) then 
-                  sq_solid(0,1,iq) = (1 - xq_solid(1,iq)) * (1 - xq_solid(2,iq)) / 4
-                  sq_solid(0,2,iq) = (1 + xq_solid(1,iq)) * (1 - xq_solid(2,iq)) / 4
-                  sq_solid(0,3,iq) = (1 + xq_solid(1,iq)) * (1 + xq_solid(2,iq)) / 4
-                  sq_solid(0,4,iq) = (1 - xq_solid(1,iq)) * (1 + xq_solid(2,iq)) / 4
-                           
-                  sq_solid(1,1,iq) = - (1 - xq_solid(2,iq)) / 4
-                  sq_solid(1,2,iq) = + (1 - xq_solid(2,iq)) / 4
-                  sq_solid(1,3,iq) = + (1 + xq_solid(2,iq)) / 4
-                  sq_solid(1,4,iq) = - (1 + xq_solid(2,iq)) / 4
-                  
-                  sq_solid(2,1,iq) = - (1 - xq_solid(1,iq)) / 4
-                  sq_solid(2,2,iq) = - (1 + xq_solid(1,iq)) / 4
-                  sq_solid(2,3,iq) = + (1 + xq_solid(1,iq)) / 4
-                  sq_solid(2,4,iq) = + (1 - xq_solid(1,iq)) / 4
-                  
-        endif     
-          enddo  
-end if
+!Decode
+k=1
+do i=1,nn_solid
+  do j=1,nsd_solid
+    a=nsd_solid*(i-1)+j
+    dis(a)=xpre1(j,i)
+    vel(a)=solid_prevel(j,i)
+    acc(a)=solid_preacc(j,i)
+    if (kid(j,i)==0) then 
+      gdof(k)=a
+      k=k+1
+    end if
+  enddo
+enddo
 !------------------------------------------------------------------
-solid_acc(:,:) = 0.0d0
-solid_vel(:,:) = 0.0d0
-solid_acc(:,:) = solid_preacc(:,:)
-
-!do i=1,nn_sbc     
-!        solid_acc(:,node_sbc(i))=(solid_bcvel(:,node_sbc(i)) - solid_prevel(:,node_sbc(i))) / dt
-!end do
 
 w(:,:)=0.0d0
 p(:,:)=0.0d0
 dg(:,:)=0.0d0 
-
-call block_solid(x,solid_acc,w,p,ien,nsd_solid,nen_solid,ne_solid,&
-		nn_solid,nquad_solid,wq_solid,sq_solid,xpre1,&
-		solid_prevel,solid_preacc,ien_sbc,ne_sbc,solid_stress,mtype)
-!do i=1,nn_sbc     
-!        p(1,node_sbc(i))=p(1,node_sbc(i)) + x(1,node_sbc(i))*0.01
-!end do
-call setsolid_id(p,kid,nsd_solid)
-call getnorm(p,p,nsd_solid*nn_solid,res)
-res=sqrt(res)
-if (myid == 0) write(*,*) '===Initial error for solid displacement===', res
-
-!if ( res .gt. 1e-6) then  ! solid disp need to be solved
-
-!-----------------------
-! Take the invese of w as the preconditioner
-! Help a lot!!!! However, have not figured out why ...
-!w(:,:)=1.0d0/w(:,:)
-!----------------------
-!time=mpi_wtime()
-call gmres_solid(x,w,p,dg,ien,kid,nsd_solid,nn_solid,ne_solid,nen_solid,inner,outer,&
-		nquad_solid,wq_solid,sq_solid,xpre1,&
-		solid_prevel,solid_preacc,solid_stress,ne_sbc,ien_sbc,mtype)
-!time=mpi_wtime()-time
-!if (myid==0) write(*,*) '*****COSTING TIME********', time
+call getnorm(dg,dg,nsd_solid*nn_solid,res)
+ res = sqrt(res)
+ if (myid == 0) write(*,*) '===Initial error for solid displacement===', res
+    ! Predict
+    dtil=dis+dt*vel+(dt**2/2.0d0)*(1.0d0-2.0d0*beta)*acc
+    vtil=vel+(1.0d0-gamma)*dt*acc
+    ! Correct
+    k=0;
+    dnew=dtil
+    vnew=vtil
+  res=huge(1.d0)
+  do while ((res .ge. tol) .and. (k .le. 100))
+    ka(:,:)=0.0d0
+    w=w+1
+    !write(*,*) 'w= ',w
+        anew=(1/(beta*dt**2))*(dnew-dtil)
+        vnew=vtil+gamma*dt*anew
+    !internal forces and tangent stiffness matrix
+    !call s_int(nee,nsd,nn,nen,ne,ngp,ndof,eldof,ng,rc1,rc2,kappa,xref,dnew,nx,detjac,ien,fint,kt,ka,sel)
+    !call s_dam(ndof,d1,d2,vnew,Mass,kt,fdam)
+    !call s_kin(nee,ndof,anew,Mass,km,fkin,ka)
+    !call s_pen(ndof,nee,ng,dnew,gdof,gx,kappa,mlagnew,rpen,fpen,ka)
+    rf=fext-fint-fpen-fkin-fdam
+    rf(ndof+1:nee)=rpen
+    res=sqrt(sum(rf**2))/nen_solid
+    write(12,*) res
+    write(10,*) '----residual------'
+    do i=1,nee
+      write(10,*) rf(i)
+    enddo
+    !call dgesv(nee, 1, ka, nee, IPIV, rf, nee, INFO )
+    !if (INFO .ne. 0) then
+    !  write(*,*) 'error: unable to solve for incremental displacements'
+    !  write(*,*) INFO
+    ! stop
+    !endif
+    dnew=dnew+rf(1:ndof)
+    mlagnew=mlagnew+rf(ndof+1:ndof+ng)
+  enddo
+  if (k .gt. 1) then
+    write(*,*) 'succesful exit after ', w, 'iterations'
+  endif
+  dis=dnew
+  vel=vnew
+  acc=anew
+  mlagnew=solid_premlag
 
 call getnorm(dg,dg,nsd_solid*nn_solid,del)
  del = sqrt(del)
 if (myid == 0) write(*,*) '===solid displacement correction norm===', del
-
-!do i=1,nn_sbc
-!	write(*,*) 'dg', dg(:,node_sbc(i)), ' at node',node_sbc(i), disp(:,node_sbc(i))
-!        dg(:,node_sbc(i))=disp(:,node_sbc(i))
-!end do
-solid_acc(:,:) = solid_acc(:,:) + dg(:,:)
-x_curr(:,:) = xpre1(:,:) + dt*solid_prevel(:,:) +&
-		 (dt**2)*0.5*( (1.0-2.0*beta)*solid_preacc(:,:) + 2.0*beta*solid_acc(:,:) )
-solid_vel(:,:) = solid_prevel(:,:) + dt*( (1-gama)*solid_preacc(:,:) + gama*solid_acc(:,:) )
-
-!do i=1,nn_sbc
-!        solid_vel(:,node_sbc(i))=solid_bcvel(:,node_sbc(i))
-!end do
+stop
+!update 
 
 
-solid_prevel(:,:) = solid_vel(:,:)
-solid_preacc(:,:) = solid_acc(:,:)
-
-
+!Encode
+do i=1,nn_solid
+  do j=1,nsd_solid
+    a=nsd_solid*(i-1)+j
+    x_curr(j,i)=dnew(a)
+    solid_prevel(j,i)=vnew(a)
+    solid_preacc(j,i)=anew(a)
+  enddo
+enddo
+solid_premlag=mlagnew
 return
 end 

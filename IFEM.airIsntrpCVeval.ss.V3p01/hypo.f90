@@ -45,6 +45,8 @@ subroutine hypo
   real(8) time
   real(8) time_com
   real(8) pin_s
+  integer ng !number of solid BCs (EM 9/15/14)
+  real(8) :: solid_mlag(nsd_solid,nn_solid)
 !============================
 character(len=14) filename
 character(len=14) resfilename
@@ -152,9 +154,19 @@ if (ndelta==1) then
 
 !-------------------------------
 ! correct the curr solid coor by solving the solid mon equations
+
 call form_solidid12(id_solidbc,nsd_solid,nn_solid,ien_sbc,ne_sbc,nen_solid,ne_solid,solid_fem_con)
+write(*,*) size(id_solidbc)
+ng=0
+do i=1,nn_solid
+ do j=1,nsd_solid
+    if (id_solidbc(j,i)==0) then 
+      ng=ng+1
+    end if
+ enddo
+enddo 
 call solve_solid_disp(solid_coor_init,solid_coor_curr,id_solidbc,solid_fem_con,node_sbc, &
-                        solid_coor_pre1,solid_vel,solid_accel,ien_sbc,solid_stress,solid_bcvel,mtype)
+                        solid_coor_pre1,solid_vel,solid_accel,ien_sbc,solid_stress,solid_bcvel,ng)
 
 !--------------------------------
 ! Find the fluid nodes overlapping with solid domain

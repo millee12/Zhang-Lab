@@ -32,16 +32,15 @@ subroutine getinf_rkpm(inf,ninf,x,xna,adist,nn,nsd,maxconn)
                      !   write(*,*) '****I am in getinf ****'      
                 endif
          endif
-   enddo
+enddo
   !write(*,*) 'ninf=  ', inf(1)
   if (ninf > maxconn) then
      write (*,*) "Too many influence nodes!"
      write (*,*) ninf
   elseif (ninf.lt.4) then
-     write (*,*) "Not enough influence nodes!"
-     write (*,*) ninf
+     write (*,*) "Not enough influence nodes!*rkpm"
+     write (*,*) ninf, 'influence nodes for node', i
   endif
-
   return
 end subroutine getinf_rkpm
 
