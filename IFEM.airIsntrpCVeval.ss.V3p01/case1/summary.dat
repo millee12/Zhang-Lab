@@ -6,8 +6,8 @@ hg_vol =    1		! hg
 taudt =     1		! taudt	
 static =    0		! static
 conserve =  1		! conserve
- nn=       6601		! # of nodes in fluid region
- ne=       6400	! # of elements in fluid region
+ nn=       1701		! # of nodes in fluid region
+ ne=       1600	! # of elements in fluid region
 nrng =    4		! # of boundary in fluid region
 nen =     4		! # of nodes per element
 ndf =     3		! # of degree of freedom
@@ -79,13 +79,13 @@ n_tec_ens= 0    	! output format: 0=ensight; 1=tecplot;(0 is only option)
 
 ndelta= 1		! 1=RKPM(nonuniform)->the only option for now
 
-nnd= 1326		! total number of nodes
-nume1= 1250			! total number of elements
+nnd= 15		! total number of nodes
+nume1= 8			! total number of elements
 nump= 1			! number of pressure nodes per element
 solid_scale= 1.0 1.0	! scaling the solid geometry (x,y,z)
 
 n_solid= 1		! number of the same structure
-nep1= 1250               ! number of elements for solid part I
+nep1= 8               ! number of elements for solid part I
 nep2= 0               ! number of elements for solid part II
 shift= 4.0d0 0.0d0 	! shift the position of the structure I (x,y,z)
 ntfun= 3 		! load by time function type;
@@ -104,15 +104,15 @@ xviss= 0.0d0   		! Damping constant
 vnorm= 1.0d0 		! normalized velocity for all nodes
 fnorm= 1.0d0		! (not used now)
 xmg= 0.0d0 0.0d0 	! gravity (x,y,z)
-ne_sbc=150		! interface element number
-nn_sbc=150		! interface node number
-node_sfcon= 26 		! solid-fluid connected nodes
+ne_sbc=12		! interface element number (length sbc_solid)
+nn_sbc=12		! interface node number (length scnode_solid
+node_sfcon=0 		! solid-fluid connected nodes
 
 Control information
 -------------------
 
- Nodes........................(nn) =    6601
- Elements.....................(ne) =    6400
+ Nodes........................(nn) =    1701
+ Elements.....................(ne) =    1600
  Total integration points..(nquad) =       4
  Time steps....................(nts) =   500
  Iterations....................(nit) =     6
@@ -173,56 +173,11 @@ Initial condition information
  Initial value :     0.000    0.000    0.000 -999.000
   
  Volume of liquid......... =  0.16000000E+02
- Minimum element length... =  0.49999830E-01
- Maximum element length... =  0.50000135E-01
- Minimum element volume... =  0.24999830E-02
- Maximum element volume... =  0.25000135E-02
+ Minimum element length... =  0.99999900E-01
+ Maximum element length... =  0.10000020E+00
+ Minimum element volume... =  0.99999800E-02
+ Maximum element volume... =  0.10000041E-01
   
  TIME STEP =            1
   
   physical time =   0.0100000000 s
-Iteration  1:   0.3170628E+01 0.6316311E+03
-Iteration  2:   0.1413871E+01 0.3985098E+03
-Iteration  3:   0.2875552E+00 0.6592946E+02
-Iteration  4:   0.4888898E-01 0.4673024E+02
-Iteration  5:   0.2065739E-01 0.1521787E+02
-Iteration  6:   0.1297655E-01 0.9933230E+01
-  
- TIME STEP =            2
-  
-  physical time =   0.0200000000 s
-Iteration  1:   0.2710984E+01 0.8977432E+03
-Iteration  2:   0.1640767E+01 0.4796756E+02
-Iteration  3:   0.1311532E+00 0.1612695E+02
-Iteration  4:   0.9402028E-02 0.1043731E+02
-Iteration  5:   0.3842869E-02 0.4227236E+01
-Iteration  6:   0.1751728E-02 0.1282872E+01
-  
- TIME STEP =            3
-  
-  physical time =   0.0300000000 s
-Iteration  1:   0.2749083E+01 0.9183497E+03
-Iteration  2:   0.1620400E+01 0.4924723E+02
-Iteration  3:   0.1100931E+00 0.8169099E+01
-Iteration  4:   0.6676316E-02 0.7357378E+01
-Iteration  5:   0.2731910E-02 0.1579591E+01
-Iteration  6:   0.1967218E-02 0.2769305E+01
-  
- TIME STEP =            4
-  
-  physical time =   0.0400000000 s
-Iteration  1:   0.2766613E+01 0.9280704E+03
-Iteration  2:   0.1610011E+01 0.5019622E+02
-Iteration  3:   0.9724582E-01 0.9498422E+01
-Iteration  4:   0.5525751E-02 0.4200912E+01
-Iteration  5:   0.2936344E-02 0.4813329E+01
-Iteration  6:   0.5538377E-03 0.6406886E+00
-  
- TIME STEP =            5
-  
-  physical time =   0.0500000000 s
-Iteration  1:   0.2755914E+01 0.9363947E+03
-Iteration  2:   0.1604135E+01 0.5155521E+02
-Iteration  3:   0.9107012E-01 0.1063481E+02
-Iteration  4:   0.4656182E-02 0.2185762E+01
-Iteration  5:   0.2888401E-02 0.4741613E+01
