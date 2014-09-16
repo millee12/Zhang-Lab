@@ -1,6 +1,6 @@
-subroutine paraout(ne,nen,t,nsd,nn,ndof,dnew,xref,solid_con,sel,vel)
+subroutine paraout(ne,nen,t,nsd_solid,nn,ndof,dnew,xref,solid_con,sel,vel)
 implicit none
-integer :: i,nn,ndof,nsd,t,solid_con(ne,nen),ne,nen
+integer :: i,nn,ndof,nsd_solid,t,solid_con(ne,nen),ne,nen
 real(8) :: dnew(ndof),xref(ndof),sel(3,ne),vel(ndof)
 character(len=12) :: flnm
 character(len=5) :: x1
@@ -16,7 +16,7 @@ write(22,80)'ASCII'
 write(22,80)'DATASET POLYDATA'
 write(22,90)'POINTS',nn,'double'
 do i=1,nn
-	write(22,70) dnew(nsd*(i-1)+1)+xref(nsd*(i-1)+1), dnew(nsd*(i-1)+2)+xref(nsd*(i-1)+2),0.0d0
+	write(22,70) dnew(nsd_solid*(i-1)+1)+xref(nsd_solid*(i-1)+1), dnew(nsd_solid*(i-1)+2)+xref(nsd_solid*(i-1)+2),0.0d0
 enddo
 write(22,95)'POLYGONS',ne,ne*5
 do i=1,ne

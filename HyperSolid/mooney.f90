@@ -1,7 +1,7 @@
-subroutine mooney(nsd,F,rc1,rc2,kappa,CMR,pk2,ssuper)
-integer :: nsd
+subroutine mooney(nsd_solid,F,rc1,rc2,kappa,CMR,pk2,ssuper)
+integer :: nsd_solid
 real(8) :: t13,t14,t12,t23,t43,t32,t53,t73,t49,t83,t109
-real(8) :: F(nsd,nsd), RCG(nsd,nsd),pk2(3),rc1,rc2,kappa,CMR(3,3),ssuper(4,4)
+real(8) :: F(nsd_solid,nsd_solid), RCG(nsd_solid,nsd_solid),pk2(3),rc1,rc2,kappa,CMR(3,3),ssuper(4,4)
 real(8) :: I1,I2,I3,dI1(3),dI2(3),dI3(3),ddI1(3,3),ddI2(3,3),ddI3(3,3)
 real(8) :: J1,J2,J3,dJ1(3),dJ2(3),dJ3(3),ddJ1(3,3),ddJ2(3,3),ddJ3(3,3)
 ! Calculate stress and stiffness

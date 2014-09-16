@@ -1,17 +1,17 @@
-subroutine s_int(nee,nsd,nnode,nen,ne,ngp,ndof,eldof,ng,rc1,rc2,kappa,xref,dis,nx,detjac,ien,fint,kt,ka,sel)
+subroutine s_int(neq_solid,nsd_solid,nnode,nen,ne,ngp,ndof,eldof,ng,rc1,rc2,kappa,xref,dis,nx,detjac,ien,fint,kt,ka,sel)
 implicit none
 !For the internal forces (calculated using Mooney-Rivlin)
-integer :: nsd,nnode,nen,ne,ngp,ndof,eldof,ng,nee
+integer :: nsd_solid,nnode,nen,ne,ngp,ndof,eldof,ng,neq_solid
 real(8) :: fint(ndof),sint(ndof)
-real(8) :: F(nsd,nsd),pk2(3),rc1,rc2,kappa,CMR(3,3),sel(3,ne)
+real(8) :: F(nsd_solid,nsd_solid),pk2(3),rc1,rc2,kappa,CMR(3,3),sel(3,ne)
 real(8) :: xref(ndof),dis(ndof)
 real(8) :: detjac(ne)
-real(8) :: nx(nen,nsd,ngp,ne)
+real(8) :: nx(nen,nsd_solid,ngp,ne)
 real(8) :: fpen(ndof)
 integer :: i,j,gp,a,b,p,q,dof1,dof2,el,ien(eldof,ne)
-real(8) :: ka(nee,nee),kt(ndof,ndof),kl(eldof,eldof),knl(eldof,eldof),ssuper(4,4)
+real(8) :: ka(neq_solid,neq_solid),kt(ndof,ndof),kl(eldof,eldof),knl(eldof,eldof),ssuper(4,4)
 !For the B matrices
-real(8) :: l(nsd,nsd)
+real(8) :: l(nsd_solid,nsd_solid)
 real(8) :: BL(3,eldof),BNL(4,eldof),dummy(3,eldof)
 !Solve for internal nodal forces and tangent stiffness matrix
 ka(:,:)=0.0d0
@@ -24,12 +24,12 @@ do el=1,ne
 	sint(:)=0.0d0
 	do gp=1,ngp
 		!Calculate Deformation Gradient
-		call defgrad(el,ne,ndof,eldof,nen,nsd,xref,dis,nx(:,:,gp,el),ien,F)
+		call defgrad(el,ne,ndof,eldof,nen,nsd_solid,xref,dis,nx(:,:,gp,el),ien,F)
 		! Calculate stress and stiffness using the Mooney-Rivlin material model
-		call mooney(nsd,F,rc1,rc2,kappa,CMR,pk2,ssuper)
+		call mooney(nsd_solid,F,rc1,rc2,kappa,CMR,pk2,ssuper)
 		!write(*,*) pk2
 		!Make strain-displacement matrices
-		call getB(el,ne,ndof,eldof,nen,ien,nsd,nx(:,:,gp,el),dis,BL,BNL)
+		call getB(el,ne,ndof,eldof,nen,ien,nsd_solid,nx(:,:,gp,el),dis,BL,BNL)
 		! Calculate stress gradient at gauss points
 		sint(:)=sint(:)+matmul(transpose(BL),pk2)*detjac(el)
 		kl(:,:)=kl(:,:)+matmul(transpose(BL),matmul(CMR,BL))*detjac(el)

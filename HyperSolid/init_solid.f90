@@ -3,12 +3,12 @@ implicit none
 save
 !total: dimensions, nodes, nodes/element, elements,
 !gauss points,time,essential BCS
-integer :: nsd=2,nn=21,nen=4,ne=12,ngp=4,tend=1000,ng
+integer :: nn=21,nen=4,ne=12,ngp=4,tend=1000,ng
 !timestep
 real(8) :: dt=1.0d-3,beta=0.25d0,gamma=0.5d0,tol=1.0d-6
 !=====================
 !total: global degrees of freedom,element degrees of freedom
-integer :: ndof,eldof,file
+integer :: ndof,file
 !reference config,displacements,residual AND delta d
 real(8),allocatable :: xref(:),dis(:),vel(:),acc(:),rf(:),xyz(:,:)
 !element dof to global dof
@@ -53,6 +53,6 @@ real(8), allocatable :: mlagnew(:),dnew(:),vnew(:),anew(:)
 !previous displacement and velocity
 real(8), allocatable :: uold(:),mlagold(:)
 !lapack solver feedback, number of unknowns in Ax=b
-integer :: INFO,nee
+integer :: INFO
 !=====================
 end module init_solid
