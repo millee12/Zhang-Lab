@@ -1,6 +1,4 @@
 restart =       -999	! restart info
-<<<<<<< HEAD
-=======
 restart_freq =	10	! restart freq
 steady =    0		! steady flow option
 stokes =    0		! stoke flow option
@@ -179,8 +177,3 @@ Initial condition information
  Maximum element length... =  0.10000020E+00
  Minimum element volume... =  0.99999800E-02
  Maximum element volume... =  0.10000041E-01
-  
- TIME STEP =            1
-  
-  physical time =   0.0100000000 s
->>>>>>> integrate

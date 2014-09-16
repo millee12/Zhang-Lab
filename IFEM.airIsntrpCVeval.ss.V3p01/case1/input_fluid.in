@@ -14,13 +14,8 @@ ndf =     3		! # of degree of freedom
 nsd =     2		! # of dimension
 iquad =   2		! # of gausian points per element
 nit =      6		! # of iteration per time step
-<<<<<<< HEAD
-nts =      750		! # of time steps
-ntsbout =  10		! output frequency
-=======
 nts =      500		! # of time steps
 ntsbout =  1		! output frequency
->>>>>>> integrate
 idisk =    00 		! ...
 inner =    80		! # of inner loop for GMRES
 outer =    5		! # of outer loop for GMRES
@@ -45,15 +40,6 @@ fix =     0.0  		! top BC vel_y
 fix =     -999 		  !top Pre
 
 fix =    4  		! left BC
-<<<<<<< HEAD
-fix =   -999  		! left BC vel_x
-fix =   -999 		! left BC vel_y
-fix =    -999  		 !left Pre
-
-edge_inflow = 4 ! edge index of nature boundary condition
-ne_inflow = 20 ! number of element of the nature boundary condition
-pin = 1.0d-1 ! (poise) constant pressure at the inflow
-=======
 fix =   10.0  		! left BC vel_x
 fix =   0.0  		! left BC vel_y
 fix =    -999  		 !left Pre
@@ -61,18 +47,13 @@ fix =    -999  		 !left Pre
 edge_inflow = 0 ! edge index of nature boundary condition
 ne_inflow = 100 ! number of element of the nature boundary condition
 pin = 10000 ! constant pressure at the inflow
->>>>>>> integrate
 ptotflag = 0 ! flag for use total pressure or not 1---> yes; 0 ---> no
 
 landa_over_mu = 0.01	! ...
 initial =  +0.0 +0.0 +0.0	! initial guess for velocity field
 gravity =    0.0    0.0     0.0 ! gravity
 interface =  1.0    1.0     1.0  !! if less than this set fi to 1.0
-<<<<<<< HEAD
-vis_liq = 1.8d-4     !! water 10-2g/cm.s, air 1.8e-4g/cm.s
-=======
 vis_liq = 1.8d-4     !! water 10-2g/cm.s, air 1.8e-2g/cm.s
->>>>>>> integrate
 den_liq = 1.3d-3	!! water 1.0g/cm^3, air 1.3e-3g/cm^3
 ref_lgt = 1.0     	 !...
 ref_vel = 1.0		!...
