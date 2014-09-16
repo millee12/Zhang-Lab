@@ -130,9 +130,8 @@ call getnorm(dg,dg,nsd_solid*nn_solid,res)
         anew=(1/(beta*dt**2))*(dnew-dtil)
         vnew=vtil+gamma*dt*anew
     !internal forces and tangent stiffness matrix
-    !call s_int(nee,nsd_solid,nn_solid,nen,ne,ngp,ndof,eldof,ng,rc1,rc2,kappa,xref,dnew,nx,detjac,ien,fint,kt,ka,sel)
-    stop
-	!call s_dam(ndof,d1,d2,vnew,Mass,kt,fdam)
+    call s_int(nee,nsd_solid,nn_solid,nen,ne,ngp,ndof,eldof,ng,rc1,rc2,kappa,xref,dnew,nx,detjac,ien,fint,kt,ka,sel)
+    !call s_dam(ndof,d1,d2,vnew,Mass,kt,fdam)
     !call s_kin(nee,ndof,anew,Mass,km,fkin,ka)
     !call s_pen(ndof,nee,ng,dnew,gdof,gx,kappa,mlagnew,rpen,fpen,ka)
     rf=fext-fint-fpen-fkin-fdam
