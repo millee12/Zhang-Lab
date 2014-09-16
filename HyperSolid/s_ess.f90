@@ -1,9 +1,9 @@
-subroutine s_ess(nsd,nen,ne,ndof,eldof,ien,ng,tmpgdof,fext)
+subroutine s_ess(nsd_solid,nen,ne,ndof,eldof,ien,ng,tmpgdof,fext)
+use solid_variables, only: nsol_ebc
 implicit none
-integer :: file,ien(eldof,ne),ne,ng,stat,dof,nen,tmpgdof(ndof),nsd,ndof,eldof,ng_true(ndof)
-integer,allocatable :: gdof(:)
+integer :: file,ien(eldof,ne),ne,ng,stat,dof,nen,tmpgdof(ndof),nsd_solid,ndof,eldof,ng_true(ndof)
 integer :: a(nen),b,el,bc,p,q,i,j,c
-real(8) :: fext(ndof),bf(nsd)
+real(8) :: fext(ndof),bf(nsd_solid)
 ng=0
 ng_true(:)=0
 file=11
@@ -22,26 +22,26 @@ read(11,*,end=150) el, a(1:nen), bc
 			if (bc .gt. 10000) then
 				if (bc .eq. 10110) then
 					ng=ng+1
-					dof=nsd*(c-1)+1
+					dof=nsd_solid*(c-1)+1
 					p=ien(dof,el)
 					tmpgdof(ng)=p
 					ng=ng+1
-					dof=nsd*(c-1)+2
+					dof=nsd_solid*(c-1)+2
 					q=ien(dof,el)
 					tmpgdof(ng)=q
 				else if (bc .eq. 10100) then
 					ng=ng+1
-					dof=nsd*(c-1)+1
+					dof=nsd_solid*(c-1)+1
 					p=ien(dof,el)
 					tmpgdof(ng)=p
 				else if (bc .eq. 10010) then
 					ng=ng+1
-					dof=nsd*(c-1)+2
+					dof=nsd_solid*(c-1)+2
 					q=ien(dof,el)
 					tmpgdof(ng)=q
 				endif
 			else
-					dof=nsd*(c-1)+1
+					dof=nsd_solid*(c-1)+1
 					p=ien(dof,el)
 					fext(p)=fext(p)+0.0d0
 			endif
@@ -61,5 +61,6 @@ where (tmpgdof .ne. 0)
 end where
 
 ng=sum(ng_true)
+nsol_ebc=sum(ng_true)
 write(*,*) 'ng= ', ng
 end subroutine s_ess

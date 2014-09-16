@@ -1,9 +1,9 @@
-subroutine s_dam(ndof,d1,d2,vel,M,KT,fdam)
+subroutine s_dam(ndof,damp_solid,vel,M,KT,fdam)
 implicit none
 integer :: ndof
-real(8) :: d1,d2
+real(8) :: damp_solid
 real(8) :: vel(ndof),fdam(ndof)
 real(8) :: M(ndof,ndof),KT(ndof,ndof),C(ndof,ndof) 
- C=d1*M+d2*KT
+ C=damp_solid(1)*M+damp_solid(2)*KT
  fdam=matmul(vel,C)
 end subroutine s_dam

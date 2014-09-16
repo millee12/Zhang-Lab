@@ -10,9 +10,12 @@ module solid_variables
   integer :: nen_solid   !...number of nodes per element
   integer :: iquad_solid  !...quadratur type, see "quadxdxn.f"
   integer :: nquad_solid
+  integer :: ndof_solid
+  integer :: eldof
+  integer :: neq_solid
   integer,parameter :: ndfpad_solid=5,nsdpad_solid=3,nenpad_solid=8,nquadpad_solid=8
   real(8) xq_solid(nsdpad_solid,nquadpad_solid),wq_solid(nquadpad_solid)
-  integer :: n_solid_ess_BC !...number of nodes with essential BC (displacement)
+  integer :: nsol_ebc !...number of nodes with essential BC (displacement)
   real(8),dimension(:,:),allocatable :: solid_ess_BC
   real(8),dimension(:,:),allocatable :: shift
   real(8),allocatable :: mirror(:,:)
@@ -25,7 +28,7 @@ module solid_variables
   integer node_sfcon ! number of solid nodes on fluid-solid connected boundary
   integer node_sfcon_1
 
-  real(8) damp_solid ! solid damping coefficient
+  real(8) damp_solid(2) ! solid damping coefficients
 
   integer :: parallel_solid
 

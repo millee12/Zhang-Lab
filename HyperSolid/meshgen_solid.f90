@@ -2,11 +2,11 @@ module meshgen_solid
   implicit none
 contains
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-subroutine readx_solid(xyz,nn,nsd)
+subroutine readx_solid(xyz,nn,nsd_solid)
   implicit none
 
-  integer,intent(in) :: nn,nsd
-  real(8) :: xyz(nn,nsd)
+  integer,intent(in) :: nn,nsd_solid
+  real(8) :: xyz(nn,nsd_solid)
   integer :: inn,file, linelen, format_type
   character(len=132) :: line
 
@@ -18,32 +18,32 @@ subroutine readx_solid(xyz,nn,nsd)
   do while (line(linelen:linelen) == ' ')
     linelen = linelen-1
   enddo
-  format_type = linelen/nsd
+  format_type = linelen/nsd_solid
 
 
-  if (nsd == 2) then
+  if (nsd_solid == 2) then
     if (format_type==14) then
-      read(line,100) xyz(1,1:nsd)
+      read(line,100) xyz(1,1:nsd_solid)
       do inn=2,nn
-        read(file,100) xyz(inn,1:nsd)
+        read(file,100) xyz(inn,1:nsd_solid)
       enddo
     elseif (format_type==18) then
-      read(line,102) xyz(1,1:nsd)
+      read(line,102) xyz(1,1:nsd_solid)
       do inn=2,nn
-        read(file,102) xyz(inn,1:nsd)
+        read(file,102) xyz(inn,1:nsd_solid)
       enddo
     endif
   
-  elseif (nsd == 3) then
+  elseif (nsd_solid == 3) then
     if (format_type==14) then
-      read(line,101) xyz(1,1:nsd)
+      read(line,101) xyz(1,1:nsd_solid)
       do inn=2,nn
-        read(file,101) xyz(inn,1:nsd)
+        read(file,101) xyz(inn,1:nsd_solid)
       enddo
     elseif (format_type==18) then
-      read(line,103) xyz(1,1:nsd)
+      read(line,103) xyz(1,1:nsd_solid)
       do inn=2,nn
-        read(file,103) xyz(inn,1:nsd)
+        read(file,103) xyz(inn,1:nsd_solid)
       enddo
     endif
   endif
