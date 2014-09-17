@@ -1,12 +1,12 @@
-subroutine s_kin(neq_solid,ndof,acc,Mass,km,fkin,ka)
+subroutine s_kin(acc,fkin,ka)
+use solid_variables
 implicit none
-integer :: ndof,neq_solid,i,j
-real(8),intent(in) :: Mass(ndof,ndof)
-real(8) :: fkin(ndof),acc(ndof),km(ndof,ndof),ka(neq_solid,neq_solid)
-ka(1:ndof,1:ndof)=ka(1:ndof,1:ndof)+km(:,:)
+integer :: i,j
+real(8) :: fkin(ndof_solid),acc(ndof_solid),ka(neq_solid,neq_solid)
+ka(1:ndof_solid,1:ndof_solid)=ka(1:ndof_solid,1:ndof_solid)+km(:,:)
 fkin(:)=0.0d0
-do i=1,ndof
-	do j=1,ndof
+do i=1,ndof_solid
+	do j=1,ndof_solid
 		fkin(i)=fkin(i)+Mass(i,j)*acc(j)
 	enddo
 enddo
