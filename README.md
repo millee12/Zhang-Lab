@@ -1,7 +1,3 @@
-# Zhang Lab
+# Eric Miller
 
-This is a repository for Lucy Zhang's lab at RPI. 
-Students here are researching:
-* Computational dynamics 
-* Vocal fold acoustics
-* Finite element method solvers
+This is a working repository for Fluid-Solid Interaction with contributions from Eric Miller, Graduate Student at RPI, Troy NY. 
