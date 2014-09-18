@@ -4,7 +4,7 @@ use solid_variables
 use mesh_convert_variables
 use meshgen_solid
 implicit none
-integer :: tend=1000
+integer :: tend=100
 real(8), allocatable :: fext(:)
 integer,allocatable :: solid_con(:,:),mtype(:)
 real(8),allocatable :: mtmp(:,:)
@@ -29,14 +29,12 @@ include 'all_solid.FOR'
 allocate(fext(ndof_solid))
 fext(:)=0.0d0
 allocate(bf(nsd_solid))
-bf(:)=[0.0d0,-1.0d0]
+bf(:)=[0.0d0,-5.0d0]
 allocate(solid_con(ne_solid,nen_solid))
 allocate(mtype(ne_solid))
 !==================
 !====read====
-allocate(mtmp(ndof_solid,ndof_solid))
 call readien_solid(solid_con,ne_solid,nen_solid,mtype)
-
 allocate(xyz(nn_solid,nsd_solid))
 call readx_solid(xyz,nn_solid,nsd_solid)
 !===========
@@ -66,7 +64,9 @@ do a=1,nn_solid
 	xref(q)=xyz(a,2)
 enddo
 !===========
-
+do i=1,eldof_solid
+	write(*,*) ien(i,:)
+enddo 
 !specify essential boundaries
 call s_ess(fext)
 gx(:)=0.0d0
@@ -85,9 +85,15 @@ acc(:)=0.0d0
 mlag(:)=0.0d0
 !initial acceleration
 acc=fext
-mtmp=Mass
+allocate(mtmp(ndof_solid,ndof_solid))
+mtmp(:,:)=Mass(:,:)
 call dgesv(ndof_solid, 1, mtmp,ndof_solid, IPIV, acc, ndof_solid, INFO )
 !write initial configuration
+		open(unit=28,file='acc.out')
+		write(28,*) '--initial--'
+		do i=1,ndof_solid
+		write(28,*) acc(i)
+		enddo
 t=0
 call paraout(t,dis,vel,solid_con,sel)
 !Time Loop

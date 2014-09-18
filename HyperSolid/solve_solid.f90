@@ -21,35 +21,46 @@ real(8) solid_stress(nsd_solid*2,nn_solid)
 real(8) sq_solid(0:3,8,8)
 integer iq
 ! Predict
-    dtil=dis+dt*vel+(dt**2/2.0d0)*(1.0d0-2.0d0*beta)*acc
-    vtil=vel+(1.0d0-gamma)*dt*acc
+	!write(*,*) ndof_solid
+    dtil=dis+dt*vel+((dt**2)/2.0d0)*(1.0d0-2.0d0*beta)*acc
+    vtil=vel+((1.0d0-gamma)*dt)*acc
+    	open(unit=29,file='dtil.out')
+		do i=1,ndof_solid
+		write(29,*) dtil(i)
+		enddo
+		write(29,*) '---'
+		open(unit=30,file='vtil.out')
+		do i=1,ndof_solid
+		write(30,*) vtil(i)
+		enddo
+		write(30,*) '---'
     ! Correct
     w=0;
-    dnew=dtil
-    vnew=vtil
-    mlagnew=mlag
+    dnew(:)=dtil(:)
+    vnew(:)=vtil(:)
+    mlagnew(:)=mlag(:)
 	res=huge(1.d0)
 	do while ((res .ge. tol) .and. (w .le. 100))
 		ka(:,:)=0.0d0
 		rf(:)=0.0d0
 		kt(:,:)=0.0d0
 	 	w=w+1
-		!write(*,*) 'w= ',w
-        anew=(1/(beta*dt**2))*(dnew-dtil)
+		write(*,*) 'w= ',w
+        anew=(1/(beta*(dt**2)))*(dnew-dtil)
         vnew=vtil+gamma*dt*anew
 		!internal forces and tangent stiffness matrix
-
+		write(*,*) ka(1,1)
 		call s_int(dnew,fint,kt,ka,sel)
+		write(*,*) ka(1,1)
 		call s_dam(vnew,kt,fdam)
+		write(*,*) ka(1,1)
 		call s_kin(anew,fkin,ka)
+		write(*,*) ka(1,1)
 		call s_pen(dnew,mlagnew,rpen,fpen,ka)
+		write(*,*) ka(1,1)
 		rf(1:ndof_solid)=fext-fint-fpen-fkin-fdam
 		rf(ndof_solid+1:neq_solid)=rpen
 		res=sqrt(sum(rf**2))/ne_solid
-		do i=1,neq_solid
-			write(1,*) ka(i,:)
-		enddo
-		write(1,*) '======'
 		open(unit=23,file='fint.out')
 		write(23,*) 'w= ',w
 		do i=1,ndof_solid
@@ -65,15 +76,28 @@ integer iq
 		do i=1,ndof_solid
 		write(25,*) fkin(i)
 		enddo
-
+		open(unit=28,file='acc.out')
+		write(28,*) 'w= ',w
+		do i=1,ndof_solid
+		write(28,*) anew(i)
+		enddo
+		open(unit=31,file='residual.out')
+		do i=1,neq_solid
+		write(31,*) rf(i)
+		enddo
+		open(unit=32,file='ka.out')
+		do i=1,neq_solid
+		write(32,*) ka(i,:)
+		enddo
+				write(32,*) '==='
 		call dgesv(neq_solid, 1, ka, neq_solid, IPIV, rf, neq_solid, INFO )
 		if (INFO .ne. 0) then
 			write(*,*) 'error: unable to solve for incremental displacements'
 			write(*,*) INFO
 			stop
 		end if
-		dnew=dnew+rf(1:ndof_solid)
-		mlagnew=mlagnew+rf(ndof_solid+1:neq_solid)
+		dnew(:)=dnew(:)+rf(1:ndof_solid)
+		mlagnew(:)=mlagnew(:)+rf(ndof_solid+1:neq_solid)
 	enddo
 	if (w .gt. 1) then
 		write(*,*) 'succesful exit after ', w, 'iterations'
