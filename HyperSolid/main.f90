@@ -25,7 +25,6 @@ ndof_solid=nn_solid*nsd_solid
 eldof_solid=nen_solid*nsd_solid
 !===========
 !====allocate=====
-include 'all_solid.FOR'
 allocate(fext(ndof_solid))
 fext(:)=0.0d0
 allocate(bf(nsd_solid))
@@ -100,6 +99,7 @@ call dgesv(ndof_solid, 1, mtmp,ndof_solid, IPIV, acc, ndof_solid, INFO )
 		enddo
 t=0
 call paraout(t,dis,vel,solid_con,sel)
+allocate(sel(3,ne_solid))
 !Time Loop
 do t=1,tend
 	write(*,*) 't=', t
