@@ -1,34 +1,58 @@
 module meshgen_solid
   implicit none
-
 contains
-
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 subroutine readx_solid(xyz,nn,nsd)
   implicit none
 
   integer,intent(in) :: nn,nsd
   real(8) :: xyz(nn,nsd)
-  integer :: inn,file
+  integer :: inn,file, linelen, format_type
+  character(len=132) :: line
 
   file=23
   open(file, FILE="mxyz_solid.in", STATUS="old",action="read")
-if (nsd == 2) then
-  do inn=1,nn
-     read(file,100) xyz(inn,1:nsd)
+  read(file,'(a132)') line
+
+  linelen = 132
+  do while (line(linelen:linelen) == ' ')
+    linelen = linelen-1
   enddo
-end if
+  format_type = linelen/nsd
 
-if (nsd == 3) then
-  do inn=1,nn
-     read(file,101) xyz(inn,1:nsd)
-  enddo
-end if
 
-100 format (D14.10, D14.10)
-101 format (D14.10, D14.10, D14.10)
-
+  if (nsd == 2) then
+    if (format_type==14) then
+      read(line,100) xyz(1,1:nsd)
+      do inn=2,nn
+        read(file,100) xyz(inn,1:nsd)
+      enddo
+    elseif (format_type==18) then
+      read(line,102) xyz(1,1:nsd)
+      do inn=2,nn
+        read(file,102) xyz(inn,1:nsd)
+      enddo
+    endif
+  
+  elseif (nsd == 3) then
+    if (format_type==14) then
+      read(line,101) xyz(1,1:nsd)
+      do inn=2,nn
+        read(file,101) xyz(inn,1:nsd)
+      enddo
+    elseif (format_type==18) then
+      read(line,103) xyz(1,1:nsd)
+      do inn=2,nn
+        read(file,103) xyz(inn,1:nsd)
+      enddo
+    endif
+  endif
+  
   close(file)
+  100 format(2D14.10)
+  101 format(3D14.10)
+  102 format(2D18.10)
+  103 format(3D18.10)
 
   return
 end subroutine readx_solid
@@ -40,7 +64,6 @@ subroutine readien_solid(solid_con,ne,nen,mtype)
   integer,intent(in) :: ne,nen
   integer :: solid_con(ne,nen)
   integer :: mtype(ne)
-
   integer :: file,ine
 
   file=21

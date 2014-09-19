@@ -165,6 +165,7 @@ do i=1,nn_solid
     end if
  enddo
 enddo 
+write(*,*) solid_stress
 call solve_solid_disp(solid_coor_init,solid_coor_curr,id_solidbc,solid_fem_con,node_sbc, &
                         solid_coor_pre1,solid_vel,solid_accel,ien_sbc,solid_stress,solid_bcvel,ng)
 
