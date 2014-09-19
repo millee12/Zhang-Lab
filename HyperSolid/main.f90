@@ -39,12 +39,12 @@ allocate(xyz(nn_solid,nsd_solid))
 call readx_solid(xyz,nn_solid,nsd_solid)
 !===========
 !====convert====
-allocate(ien(eldof_solid,ne_solid))
+allocate(ien_solid(eldof_solid,ne_solid))
 open(unit=35,file='solidcon.out')
 do i=1,nen_solid
 	write(35,*) solid_con(i,:)
 enddo 
-ien(:,:)=0
+ien_solid(:,:)=0
 do el=1,ne_solid
 	do a=1,nen_solid
 		if (a .gt. 2) then
@@ -55,7 +55,7 @@ do el=1,ne_solid
 		do i=1,nsd_solid
 			p=nsd_solid*(solid_con(el,a)-1)+i
 			q=nsd_solid*(b-1)+i
-			ien(q,el)=p
+			ien_solid(q,el)=p
 		enddo
 	enddo
 enddo
@@ -67,9 +67,9 @@ do a=1,nn_solid
 	xref(q)=xyz(a,2)
 enddo
 !===========
-open(unit=34,file='ien.out')
+open(unit=34,file='ien_solid.out')
 do i=1,eldof_solid
-	write(34,*) ien(i,:)
+	write(34,*) ien_solid(i,:)
 enddo 
 !specify essential boundaries
 call s_ess(fext)

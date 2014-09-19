@@ -47,7 +47,7 @@ real(8),allocatable :: detjac(:)
 real(8),allocatable :: xref(:)
 real(8), allocatable :: nx(:,:,:,:)
 real(8), allocatable :: shp(:,:,:)
-integer, allocatable :: ien(:,:)
+integer, allocatable :: ien_solid(:,:)
 
 real(8), allocatable :: IPIV(:)
 integer :: INFO
