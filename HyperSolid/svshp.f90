@@ -25,7 +25,7 @@ do el=1,ne_solid
                 p=nsd_solid*(a-1)+i
                 dof=ien_solid(p,el)
                 do j=1,nsd_solid
-                   jac(i,j)=jac(i,j)+shp(j,a,gp)*xref(dof)
+                   jac(i,j)=jac(i,j)+shp(j,a,gp)*xref_solid(dof)
                 enddo
             enddo
         enddo
