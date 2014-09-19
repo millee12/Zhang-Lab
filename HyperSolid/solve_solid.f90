@@ -45,19 +45,14 @@ integer iq
 		rf(:)=0.0d0
 		kt(:,:)=0.0d0
 	 	w=w+1
-		write(*,*) 'w= ',w
+		!write(*,*) 'w= ',w
         anew=(1/(beta*(dt**2)))*(dnew-dtil)
         vnew=vtil+gamma*dt*anew
 		!internal forces and tangent stiffness matrix
-		write(*,*) ka(1,1)
 		call s_int(dnew,fint,kt,ka,sel)
-		write(*,*) ka(1,1)
 		call s_dam(vnew,kt,fdam)
-		write(*,*) ka(1,1)
 		call s_kin(anew,fkin,ka)
-		write(*,*) ka(1,1)
 		call s_pen(dnew,mlagnew,rpen,fpen,ka)
-		write(*,*) ka(1,1)
 		rf(1:ndof_solid)=fext-fint-fpen-fkin-fdam
 		rf(ndof_solid+1:neq_solid)=rpen
 		res=sqrt(sum(rf**2))/ne_solid
@@ -90,6 +85,12 @@ integer iq
 		write(32,*) ka(i,:)
 		enddo
 				write(32,*) '==='
+
+		open(unit=35,file='kt.out')
+		do i=1,neq_solid
+		write(35,*) ka(i,:)
+		enddo
+				write(35,*) '==='
 		call dgesv(neq_solid, 1, ka, neq_solid, IPIV, rf, neq_solid, INFO )
 		if (INFO .ne. 0) then
 			write(*,*) 'error: unable to solve for incremental displacements'

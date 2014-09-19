@@ -20,6 +20,7 @@ real(8) :: ssuper(4,4)
 real(8) :: l(nsd_solid,nsd_solid)
 real(8) :: BL(3,eldof_solid)
 real(8) :: BNL(4,eldof_solid)
+real(8) :: hx(nen_solid,nsd_solid)
 !Solve for internal nodal forces and tangent stiffness matrix
 ka(:,:)=0.0d0
 fint(:)=0.0d0
@@ -30,13 +31,18 @@ do el=1,ne_solid
 	knl(:,:)=0.0d0
 	sint(:)=0.0d0
 	do gp=1,nquad_solid
+		do i=1,nen_solid
+			do j=1,nsd_solid
+				hx(i,j)=nx(i,j,gp,el)
+			enddo
+		enddo
 		!Calculate Deformation Gradient
-		call defgrad(el,dnew,nx(:,:,gp,el),F)
+		call defgrad(el,dnew,hx,F)
+
 		! Calculate stress and stiffness using the Mooney-Rivlin material model
 		call mooney(F,CMR,pk2,ssuper)
-		!write(*,*) pk2
 		!Make strain-displacement matrices
-		call getB(el,nx(:,:,gp,el),dnew,BL,BNL)
+		call getB(el,dnew,hx,BL,BNL)
 		! Calculate stress gradient at gauss points
 		sint(:)=sint(:)+matmul(transpose(BL),pk2)*detjac(el)	
 		kl(:,:)=kl(:,:)+matmul(transpose(BL),matmul(CMR,BL))*detjac(el)

@@ -2,11 +2,15 @@ subroutine getM(bf,fext)
 use solid_variables
 implicit none 
 integer :: el,al,bl,pg,qg,i,pl,ql,gp
-real(8) :: mel(eldof_solid,eldof_solid)
+real(8) :: mel(nen_solid,nen_solid)
 real(8) :: bf(nsd_solid),fext(ndof_solid)
 allocate(Mass(ndof_solid,ndof_solid))
 allocate(km(ndof_solid,ndof_solid))
 Mass(:,:)=0.0d0
+open(unit=35,file='mel.out')
+!do i=1,nen_solid
+!write(*,*) shp(0,i,1)
+!enddo
 do el=1,ne_solid
     mel(:,:)=0.0d0
     do gp=1,nquad_solid
@@ -16,6 +20,10 @@ do el=1,ne_solid
             enddo
         enddo
     enddo
+        do i=1,nen_solid
+            write(35,*) mel(i,:)
+        enddo
+        write(35,*) '========'
     do al=1,nen_solid
         do bl=1,nen_solid
             do i=1,nsd_solid

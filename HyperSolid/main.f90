@@ -4,7 +4,7 @@ use solid_variables
 use mesh_convert_variables
 use meshgen_solid
 implicit none
-integer :: tend=100
+integer :: tend=1000
 real(8), allocatable :: fext(:)
 integer,allocatable :: solid_con(:,:),mtype(:)
 real(8),allocatable :: mtmp(:,:)
@@ -40,7 +40,10 @@ call readx_solid(xyz,nn_solid,nsd_solid)
 !===========
 !====convert====
 allocate(ien(eldof_solid,ne_solid))
-
+open(unit=35,file='solidcon.out')
+do i=1,nen_solid
+	write(35,*) solid_con(i,:)
+enddo 
 ien(:,:)=0
 do el=1,ne_solid
 	do a=1,nen_solid
@@ -64,8 +67,9 @@ do a=1,nn_solid
 	xref(q)=xyz(a,2)
 enddo
 !===========
+open(unit=34,file='ien.out')
 do i=1,eldof_solid
-	write(*,*) ien(i,:)
+	write(34,*) ien(i,:)
 enddo 
 !specify essential boundaries
 call s_ess(fext)

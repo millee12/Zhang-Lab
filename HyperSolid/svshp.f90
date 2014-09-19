@@ -5,7 +5,7 @@ integer :: i,j,gp,a,p,dof,el
 real(8) :: jac(nsd_solid,nsd_solid),jacinv(nsd_solid,nsd_solid)
 real(8) :: xigp(nquad_solid,nsd_solid)
 real(8) ::xi(nen_solid,nsd_solid)
-allocate(shp(3,nen_solid,nquad_solid))
+allocate(shp(0:2,nen_solid,nquad_solid))
 allocate(nx(nen_solid,nsd_solid,nquad_solid,ne_solid))
 allocate(detjac(ne_solid))
 xi(:,1)=[1.0d0,-1.0d0,-1.0d0,1.0d0]
@@ -18,9 +18,9 @@ do el=1,ne_solid
         jac(:,:)=0.0d0
         do a=1,nen_solid
         !Make Shape Functions
-            shp(0,a,gp)=0.25d0*(1+xi(a,1)*xigp(gp,1))*(1+xi(a,2)*xigp(gp,2))
-            shp(1,a,gp)=0.25d0*xi(a,1)*(1+xi(a,2)*xigp(gp,2))
-            shp(2,a,gp)=0.25d0*xi(a,2)*(1+xi(a,1)*xigp(gp,1))
+            shp(0,a,gp)=0.25d0*(1.0d0+xi(a,1)*xigp(gp,1))*(1.0d0+xi(a,2)*xigp(gp,2))
+            shp(1,a,gp)=0.25d0*xi(a,1)*(1.0d0+xi(a,2)*xigp(gp,2))
+            shp(2,a,gp)=0.25d0*xi(a,2)*(1.0d0+xi(a,1)*xigp(gp,1))
             do i=1,nsd_solid
                 p=nsd_solid*(a-1)+i
                 dof=ien(p,el)
