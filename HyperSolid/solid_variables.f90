@@ -1,7 +1,6 @@
 module solid_variables
   implicit none
   save
-  real(8),parameter :: dt=1.0d-3
   integer :: nsd_solid
   integer :: nn_solid
   integer :: nen_solid

@@ -1,5 +1,6 @@
 subroutine solve_solid(fext,dis,vel,acc,mlag,sel)
 use solid_variables
+use run_variables, only: dt
 implicit none
 real(8) :: fint(ndof_solid),fkin(ndof_solid),fdam(ndof_solid),fpen(ndof_solid)
 real(8) :: CMR(3,3),sel(3,ne_solid)

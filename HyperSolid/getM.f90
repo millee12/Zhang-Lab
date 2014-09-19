@@ -1,5 +1,6 @@
 subroutine getM(bf,fext)
 use solid_variables
+use run_variables, only: dt
 implicit none 
 integer :: el,al,bl,pg,qg,i,pl,ql,gp
 real(8) :: mel(nen_solid,nen_solid)
