@@ -1,0 +1,22 @@
+FORMAT
+     type:   ensight
+
+GEOMETRY
+model:                  1     fem.geo****** change_coords_only
+
+VARIABLE
+scalar per node:  1 pressure fem.pre******
+vector per node:  1 velocity fem.vel******
+vector per node:  1 accelera fem.acc******
+vector per node:  1 forceFSI fem.fsi******
+scalar per node:  1 Indicato fem.ind******
+
+
+TIME
+time set:                         1
+number of steps:                  1
+filename start number:            0
+filename increment:               1
+
+time values:
+  0.0000000000

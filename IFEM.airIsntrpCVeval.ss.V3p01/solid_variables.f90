@@ -43,7 +43,7 @@ module solid_variables
  real(8),parameter  :: kappa=1.6667d5
 
 real(8),allocatable :: detjac(:)
-real(8),allocatable :: xref(:)
+real(8),allocatable :: xref_solid(:)
 real(8), allocatable :: nx(:,:,:,:)
 real(8), allocatable :: shp(:,:,:)
 integer, allocatable :: ien_solid(:,:)
