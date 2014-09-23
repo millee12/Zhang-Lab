@@ -1,2 +1,3 @@
 sandbox is for testing git so that I can get faster using it
-the first thing I want to learn is how to resolve merge conflicts more efficiently 
+the first thing I want to learn is how to resolve merge conflicts more efficiently
+this line was added from imac-basement 
