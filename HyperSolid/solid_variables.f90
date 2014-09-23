@@ -15,8 +15,9 @@ module solid_variables
   integer :: n_solid !...number of solids ( x times the solid, which is read in coortable
   integer :: iquad_solid  !...quadratur type, see "quadxdxn.f"
 
-  integer,parameter :: ndfpad_solid=5,nsdpad_solid=3,nenpad_solid=8,nquadpad_solid=8
-  real(8) xq_solid(nsdpad_solid,nquadpad_solid),wq_solid(nquadpad_solid)
+  !integer,parameter :: ndfpad_solid=5,nsdpad_solid=3,nenpad_solid=8,nquadpad_solid=8
+  !real(8) xq_solid(nsdpad_solid,nquadpad_solid)
+  !real(8) wq_solid(nquadpad_solid)
   integer :: nsol_ebc !...number of nodes with essential BC (displacement)
   real(8),dimension(:,:),allocatable :: solid_ess_BC
   real(8),dimension(:,:),allocatable :: shift

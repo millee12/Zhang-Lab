@@ -123,9 +123,9 @@ ien_sbc(i,1)=i
 enddo
 do i=1,nn_solid
 	if (i .gt. 14) then
-		solid_stress(1:2,i)=-1.0d2*(i-14)
+		solid_stress(1:2,i)=-1.0d2
 	else if (i .le. 7) then
-		solid_stress(1:2,i)=1.0d2*i
+		solid_stress(1:2,i)=1.0d2
 	endif
 enddo
 !Time Loop
