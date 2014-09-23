@@ -2,11 +2,11 @@ module meshgen_solid
   implicit none
 contains
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-subroutine readx_solid(xyz,nn,nsd)
+subroutine readx_solid(xyz_solid,nn,nsd)
   implicit none
 
   integer,intent(in) :: nn,nsd
-  real(8) :: xyz(nn,nsd)
+  real(8) :: xyz_solid(nn,nsd)
   integer :: inn,file, linelen, format_type
   character(len=132) :: line
 
@@ -23,27 +23,27 @@ subroutine readx_solid(xyz,nn,nsd)
 
   if (nsd == 2) then
     if (format_type==14) then
-      read(line,100) xyz(1,1:nsd)
+      read(line,100) xyz_solid(1,1:nsd)
       do inn=2,nn
-        read(file,100) xyz(inn,1:nsd)
+        read(file,100) xyz_solid(inn,1:nsd)
       enddo
     elseif (format_type==18) then
-      read(line,102) xyz(1,1:nsd)
+      read(line,102) xyz_solid(1,1:nsd)
       do inn=2,nn
-        read(file,102) xyz(inn,1:nsd)
+        read(file,102) xyz_solid(inn,1:nsd)
       enddo
     endif
   
   elseif (nsd == 3) then
     if (format_type==14) then
-      read(line,101) xyz(1,1:nsd)
+      read(line,101) xyz_solid(1,1:nsd)
       do inn=2,nn
-        read(file,101) xyz(inn,1:nsd)
+        read(file,101) xyz_solid(inn,1:nsd)
       enddo
     elseif (format_type==18) then
-      read(line,103) xyz(1,1:nsd)
+      read(line,103) xyz_solid(1,1:nsd)
       do inn=2,nn
-        read(file,103) xyz(inn,1:nsd)
+        read(file,103) xyz_solid(inn,1:nsd)
       enddo
     endif
   endif
@@ -64,7 +64,6 @@ subroutine readien_solid(solid_con,ne,nen,mtype)
   integer,intent(in) :: ne,nen
   integer :: solid_con(ne,nen)
   integer :: mtype(ne)
-
   integer :: file,ine
 
   file=21

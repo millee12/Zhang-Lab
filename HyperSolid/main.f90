@@ -1,128 +1,137 @@
 !Main File to test Solid Solver Solid Solver
 program main 
-use init_solid
 use solid_variables
 use mesh_convert_variables
 use meshgen_solid
-ndof=nn*nsd
-eldof=nen*nsd
-!allocate variables
-include 'all_solid.FOR'
+implicit none
+integer :: tend=250
+real(8), allocatable :: fext(:)
+integer,allocatable :: solid_con(:,:),mtype(:)
+real(8),allocatable :: mtmp(:,:)
+integer :: i,j,gp,a,b,p,q,el,t,w
+real(8),allocatable :: sel(:,:)
+real(8), allocatable ::bf(:)
+real(8),allocatable :: dis(:),vel(:),acc(:),mlag(:)
+real(8),allocatable ::  solid_stress(:,:)
+!integer,allocatable ::  ien_sbc(:,:)
+! Hard-coded inputs
 nrng_solid=1
 allocate(bc_solid(nrng_solid,2))
 bc_solid(1,2)=10110
-!bc_solid(2,2)=10000
-bf(:)=[0.0d0,-5.0d0]
+!====read====
 call read_abaqus_solid
-call readien_solid(solid_con,ne,nen,mtype)
-do el=1,ne
-	do a=1,nen
+ne_solid=nep1
+nn_solid=nn_solid_1
+ndof_solid=nn_solid*nsd_solid
+eldof_solid=nen_solid*nsd_solid
+!===========
+!====allocate=====
+allocate(fext(ndof_solid))
+fext(:)=0.0d0
+allocate(bf(nsd_solid))
+bf(:)=[0.0d0,0.0d0]
+allocate(solid_con(ne_solid,nen_solid))
+allocate(mtype(ne_solid))
+!==================
+!====read====
+call readien_solid(solid_con,ne_solid,nen_solid,mtype)
+allocate(xyz_solid(nn_solid,nsd_solid))
+call readx_solid(xyz_solid,nn_solid,nsd_solid)
+!===========
+!====convert====
+allocate(lm_solid(eldof_solid,ne_solid))
+open(unit=35,file='solidcon.out')
+do i=1,nen_solid
+	write(35,*) solid_con(i,:)
+enddo 
+lm_solid(:,:)=0
+do el=1,ne_solid
+	do a=1,nen_solid
 		if (a .gt. 2) then
 			b=a-2
 		else
 			b=a+2
 		endif
-		do i=1,nsd
-			p=nsd*(solid_con(el,a)-1)+i
-			q=nsd*(b-1)+i
-			ien(q,el)=p
+		do i=1,nsd_solid
+			p=nsd_solid*(solid_con(el,a)-1)+i
+			q=nsd_solid*(b-1)+i
+			lm_solid(q,el)=p
 		enddo
 	enddo
 enddo
-call readx_solid(xyz,nn,nsd)
-do a=1,nn
-	p=nsd*(a-1)+1
-	q=nsd*(a-1)+2
-	xref(p)=xyz(a,1)
-	xref(q)=xyz(a,2)
+allocate(ien_solid(ne_solid,nen_solid))
+ien_solid(:,:)=solid_con(:,:)
+allocate(xref_solid(ndof_solid))
+do a=1,nn_solid
+	p=nsd_solid*(a-1)+1
+	q=nsd_solid*(a-1)+2
+	xref_solid(p)=xyz_solid(a,1)
+	xref_solid(q)=xyz_solid(a,2)
 enddo
-open(unit = 12, file = 'residual.out')
-open(unit=10,file='dg.out')
-open(unit=4,file='d.out')
+!===========
+open(unit=34,file='lm_solid.out')
+do i=1,eldof_solid
+	write(34,*) lm_solid(i,:)
+enddo 
+!specify essential boundaries
+call s_ess
+gx(:)=0.0d0
+!save shape functions and derivatives
+call svshp
+!save mass matrix and kinematic stiffness and add body forces
+call getM(bf,fext)
 !Initial Conditions
+allocate(dis(ndof_solid))
+allocate(vel(ndof_solid))
+allocate(acc(ndof_solid))
+allocate(mlag(nsol_ebc))
+allocate(sel(3,ne_solid))
 dis(:)=0.0d0
 vel(:)=0.0d0
-fint(:)=0.0d0
-!specify essential boundaries
-call s_ess(nsd,nen,ne,ndof,eldof,ien,ng,tmpgdof,fext)
-allocate(mlagnew(ng))
-allocate(mlag(ng))
-allocate(rpen(ng))
-allocate(gdof(ng))
-allocate(gx(ng))
-nee=ndof+ng
-allocate(rf(nee))
-allocate(IPIV(nee))
-allocate(ka(nee,nee))
-call s_gdof(ndof,ng,tmpgdof,gdof,gx,mlag)
-!write(*,*) gdof
-!stop
-!MR constants
-rc1=8.6207d3
-rc2=0.0d0
-kappa=1.6667d5
-!Damping Constants
-d1=0.25d0
-d2=3.65d-4
-!save shape functions and derivatives
-call svshp(ndof,eldof,nen,nsd,ngp,ne,ien,xref,nx,detjac,shp)
-!save mass matrix and kinematic stiffness and add body forces
-call getM(nsd,dt,beta,gamma,rho,bf,ndof,ngp,eldof,nen,ne,detjac,ien,shp,Mass,km,fext)
+acc(:)=0.0d0
+mlag(:)=0.0d0
 !initial acceleration
-acc=fext-fint
-mtmp=Mass
-call dgesv(ndof, 1, mtmp, ndof, IPIV, acc, ndof, INFO )
+acc=fext
+allocate(mtmp(ndof_solid,ndof_solid))
+mtmp(:,:)=Mass(:,:)
+call dgesv(ndof_solid, 1, mtmp,ndof_solid, IPIV, acc, ndof_solid, INFO )
 !write initial configuration
+		open(unit=28,file='acc.out')
+		write(28,*) '--initial--'
+		do i=1,ndof_solid
+		write(28,*) acc(i)
+		enddo
 t=0
-call paraout(ne,nen,t,nsd,nn,ndof,dnew,xref,solid_con,sel,vel)
+call paraout(t,dis,vel,solid_con,sel,fext)
+!SBC
+allocate(ien_sbc(ne_sbc,nen_solid+2))
+allocate(solid_stress(nsd_solid*2,nn_solid))
+ien_sbc(:,:)=0.0d0
+solid_stress(:,:)=0.0d0
+do i=1,ne_sbc
+ien_sbc(i,1)=i
+	if (i .gt. 6) then
+		ien_sbc(i,4)=1
+		ien_sbc(i,5)=1
+	else
+		ien_sbc(i,2)=1
+		ien_sbc(i,3)=1
+
+	endif 
+	ien_sbc(i,nen_solid+2)=-999
+	write(*,*) ien_sbc(i,:)
+enddo
+do i=1,nn_solid
+	if (i .gt. 14) then
+		solid_stress(1:2,i)=-1.0d2
+	else if (i .le. 7) then
+		solid_stress(1:2,i)=1.0d2
+	endif
+enddo
 !Time Loop
 do t=1,tend
 	write(*,*) 't=', t
-	write(*,*) ng
-    ! Predict
-    dtil=dis+dt*vel+(dt**2/2.0d0)*(1.0d0-2.0d0*beta)*acc
-    vtil=vel+(1.0d0-gamma)*dt*acc
-    ! Correct
-    w=0;
-    dnew=dtil
-    vnew=vtil
-    mlagnew=mlag
-	res=huge(1.d0)
-	do while ((res .ge. tol) .and. (w .le. 100))
-		ka(:,:)=0.0d0
-	 	w=w+1
-		!write(*,*) 'w= ',w
-        anew=(1/(beta*dt**2))*(dnew-dtil)
-        vnew=vtil+gamma*dt*anew
-		!internal forces and tangent stiffness matrix
-		call s_int(nee,nsd,nn,nen,ne,ngp,ndof,eldof,ng,rc1,rc2,kappa,xref,dnew,nx,detjac,ien,fint,kt,ka,sel)
-		call s_dam(ndof,d1,d2,vnew,Mass,kt,fdam)
-		call s_kin(nee,ndof,anew,Mass,km,fkin,ka)
-		call s_pen(ndof,nee,ng,dnew,gdof,gx,kappa,mlagnew,rpen,fpen,ka)
-		rf(1:ndof)=fext-fint-fpen-fkin-fdam
-		rf(ndof+1:nee)=rpen
-		res=sqrt(sum(rf**2))/ne
-		write(12,*) res
-		write(10,*) '----residual------'
-		do i=1,nee
-			write(10,*) rf(i)
-		enddo
-		call dgesv(nee, 1, ka, nee, IPIV, rf, nee, INFO )
-		if (INFO .ne. 0) then
-			write(*,*) 'error: unable to solve for incremental displacements'
-			write(*,*) INFO
-			stop
-		endif
-		dnew=dnew+rf(1:ndof)
-		mlagnew=mlagnew+rf(ndof+1:ndof+ng)
-	enddo
-	if (w .gt. 1) then
-		write(*,*) 'succesful exit after ', w, 'iterations'
-	endif
-	dis=dnew
-	vel=vnew
-	acc=anew
-	mlag=mlagnew
-	call paraout(ne,nen,t,nsd,nn,ndof,dnew,xref,solid_con,sel,vel)
+    call solve_solid(solid_stress,dis,vel,acc,mlag,sel)
+	call paraout(t,dis,vel,solid_con,sel,fext)
 enddo	
 end program main

@@ -45,14 +45,16 @@ subroutine hypo
   real(8) time
   real(8) time_com
   real(8) pin_s
+!  integer ng !number of solid BCs (EM 9/15/14)
+!  real(8) :: solid_mlag(nsd_solid,nn_solid)
 !============================
 character(len=14) filename
 character(len=14) resfilename
 character(len=7) fileroot
 !============================
 ! Define local variables
-  include "hypo_declaration_solid.fi"
-  include "hypo_declaration_fluid.fi"
+  include "hypo_declaration_solid.fi" 
+ include "hypo_declaration_fluid.fi"
 
 !============================
 ! Define varibales on each processor
@@ -72,18 +74,16 @@ character(len=7) fileroot
  ! integer infdomain(nn_solid)
       call mpi_barrier(mpi_comm_world,ierror)
   write(*,*) 'myid', myid, 'nn_local', nn_local, 'ne_local', ne_local !id for debuger
-
 !=============================
 !  vis_solid= - vis_liq 
   vis_solid=  1.0
   I_fluid(:)=0.0
   solid_pave(:)=0.0d0
-  damp_solid = 10.0
+!  damp_solid = 10.0
   solid_vel(:,:) = 0.0
   solid_bcvel(:,:) = 0.0
   solid_bcvel_old(:,:) = 0.0
 !=============================
-
 if (edge_inflow .ne. 0) then
 call edgeele(edge_inflow,rng,neface,ne,bc4el,ne_inflow)
 end if
@@ -105,8 +105,8 @@ if (restart == 0) then
      include "hypo_restart_read.fi"
   endif
 
-call lumpmassmatrix(x,d,dold,p,hg,ien,f_fluids,ne_intlocal,ien_intlocal,&
-                    node_local,nn_local,fden,fvis,I_fluid,rng)
+!call lumpmassmatrix(x,d,dold,p,hg,ien,f_fluids,ne_intlocal,ien_intlocal,&
+                    !node_local,nn_local,fden,fvis,I_fluid,rng)
 
 !=================================================================
 !						 time loop	
@@ -152,9 +152,21 @@ if (ndelta==1) then
 
 !-------------------------------
 ! correct the curr solid coor by solving the solid mon equations
-call form_solidid12(id_solidbc,nsd_solid,nn_solid,ien_sbc,ne_sbc,nen_solid,ne_solid,solid_fem_con)
-call solve_solid_disp(solid_coor_init,solid_coor_curr,id_solidbc,solid_fem_con,node_sbc, &
-                        solid_coor_pre1,solid_vel,solid_accel,ien_sbc,solid_stress,solid_bcvel,mtype)
+
+!call form_solidid12(id_solidbc,nsd_solid,nn_solid,ien_sbc,ne_sbc,nen_solid,ne_solid,solid_fem_con)
+!write(*,*) size(id_solidbc)
+!do i=1,nn_solid
+! do j=1,nsd_solid
+!    if (id_solidbc(j,i)==0) then 
+!      ng=ng+1
+!    end if
+! enddo
+!enddo 
+write(*,*) solid_stress
+write(*,*) 'SOLVE SOLID HERE'
+stop
+!call solve_solid_disp(solid_coor_init,solid_coor_curr,id_solidbc,solid_fem_con,node_sbc, &
+!                        solid_coor_pre1,solid_vel,solid_accel,ien_sbc,solid_stress,solid_bcvel,ng)
 
 !--------------------------------
 ! Find the fluid nodes overlapping with solid domain
