@@ -1,13 +1,16 @@
-subroutine s_ess
+subroutine s_ess(fext)
 use solid_variables
 implicit none
 integer :: file,tmpgdof(ndof_solid),ng_true(ndof_solid),ng
 integer :: a(nen_solid),b,el,bc,p,q,i,j,c,dof
+real(8) :: fext(ndof_solid)
 ng=0
 ng_true(:)=0
 file=11
 open(file, FILE="sbc_solid.in", STATUS="old",action="read")
 tmpgdof(:)=0
+
+fext(:)=0.0d0
 
 do while (i .lt. huge(1))
 read(11,*,end=150) el, a(1:nen_solid), bc
@@ -22,23 +25,27 @@ read(11,*,end=150) el, a(1:nen_solid), bc
 				if (bc .eq. 10110) then
 					ng=ng+1
 					dof=nsd_solid*(c-1)+1
-					p=lm_solid(dof,el)
+					p=ien(dof,el)
 					tmpgdof(ng)=p
 					ng=ng+1
 					dof=nsd_solid*(c-1)+2
-					q=lm_solid(dof,el)
+					q=ien(dof,el)
 					tmpgdof(ng)=q
 				else if (bc .eq. 10100) then
 					ng=ng+1
 					dof=nsd_solid*(c-1)+1
-					p=lm_solid(dof,el)
+					p=ien(dof,el)
 					tmpgdof(ng)=p
 				else if (bc .eq. 10010) then
 					ng=ng+1
 					dof=nsd_solid*(c-1)+2
-					q=lm_solid(dof,el)
+					q=ien(dof,el)
 					tmpgdof(ng)=q
 				endif
+			else
+					dof=nsd_solid*(c-1)+1
+					p=ien(dof,el)
+					fext(p)=fext(p)+0.0d0
 			endif
 		endif	
 	enddo

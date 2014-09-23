@@ -5,7 +5,7 @@ integer :: a,p,el
 real(8) :: dis(ndof_solid),uel(eldof_solid),l(nsd_solid,nsd_solid),hx(nen_solid,nsd_solid)
 real(8) :: BL(3,eldof_solid),BL0(3,eldof_solid),BL1(3,eldof_solid),BNL(4,eldof_solid)
 do a=1,eldof_solid
-	p=ien(a,el)
+	p=lm_solid(a,el)
 	uel(a)=dis(p)
 enddo
 !Make strain-displacement matrices

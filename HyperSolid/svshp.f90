@@ -23,7 +23,7 @@ do el=1,ne_solid
             shp(2,a,gp)=0.25d0*xi(a,2)*(1.0d0+xi(a,1)*xigp(gp,1))
             do i=1,nsd_solid
                 p=nsd_solid*(a-1)+i
-                dof=ien(p,el)
+                dof=lm_solid(p,el)
                 do j=1,nsd_solid
                    jac(i,j)=jac(i,j)+shp(j,a,gp)*xref(dof)
                 enddo

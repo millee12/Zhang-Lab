@@ -1,6 +1,3 @@
-
-
-
 subroutine read_abaqus_solid
 
     use solid_variables

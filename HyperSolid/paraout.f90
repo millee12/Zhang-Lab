@@ -1,8 +1,11 @@
-subroutine paraout(t,dnew,vel,solid_con,sel)
+subroutine paraout(t,dnew,vel,solid_con,sel,fext)
 use solid_variables 
 implicit none
 integer :: i,t,solid_con(ne_solid,nen_solid)
-real(8) :: dnew(ndof_solid),vel(ndof_solid),sel(3,ne_solid)
+real(8) :: dnew(ndof_solid)
+real(8) :: vel(ndof_solid)
+real(8) :: sel(3,ne_solid)
+real(8) :: fext(ndof_solid)
 character(len=12) :: flnm
 character(len=5) :: x1
 character(len=5) :: x2
@@ -23,27 +26,31 @@ write(22,95)'POLYGONS',ne_solid,ne_solid*5
 do i=1,ne_solid
 	write(22,30) 4,solid_con(i,1)-1,solid_con(i,2)-1,solid_con(i,3)-1,solid_con(i,4)-1
 enddo
-!write(22,96)'CELL_DATA',ne_solid
-!write(22,97)'SCALARS','sxx','float',1
-!write(22,80)'LOOKUP_TABLE default'
-!do i=1,ne_solid
-!	write(22,98) sel(1,i)
-!enddo
-!write(22,97)'SCALARS','syy','float',1
-!write(22,80)'LOOKUP_TABLE default'
-!do i=1,ne_solid
-!	write(22,98) sel(2,i)
-!enddo
-!write(22,97)'SCALARS','sxy','float',1
-!write(22,80)'LOOKUP_TABLE default'
-!do i=1,ne_solid
-!	write(22,98) sel(3,i)
-!enddo
-!write(22,96)'POINT_DATA',nn_solid
-!write(22,97)'VECTORS','vel','float'
-!do i=1,ndof_solid,2
-!	write(22,*) vel(i),vel(i+1),0.0d0
-!enddo
+write(22,96)'CELL_DATA',ne_solid
+write(22,97)'SCALARS','sxx','float',1
+write(22,80)'LOOKUP_TABLE default'
+do i=1,ne_solid
+	write(22,98) sel(1,i)
+enddo
+write(22,97)'SCALARS','syy','float',1
+write(22,80)'LOOKUP_TABLE default'
+do i=1,ne_solid
+	write(22,98) sel(2,i)
+enddo
+write(22,97)'SCALARS','sxy','float',1
+write(22,80)'LOOKUP_TABLE default'
+do i=1,ne_solid
+	write(22,98) sel(3,i)
+enddo
+write(22,96)'POINT_DATA',nn_solid
+write(22,97)'VECTORS','vel','float'
+do i=1,ndof_solid,nsd_solid
+	write(22,70) vel(i),vel(i+1),0.0d0
+enddo
+write(22,97)'VECTORS','fext','float'
+do i=1,ndof_solid,nsd_solid
+	write(22,70) fext(i),fext(i+1),0.0d0
+enddo
 70 format(f10.4,f10.4,f10.4) 
 20 format(I5.5) 
 30 format(I5,I5,I5,I5,I5) 
