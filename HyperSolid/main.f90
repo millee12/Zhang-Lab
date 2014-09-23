@@ -61,12 +61,12 @@ do el=1,ne_solid
 enddo
 allocate(ien_solid(ne_solid,nen_solid))
 ien_solid(:,:)=solid_con(:,:)
-allocate(xref(ndof_solid))
+allocate(xref_solid(ndof_solid))
 do a=1,nn_solid
 	p=nsd_solid*(a-1)+1
 	q=nsd_solid*(a-1)+2
-	xref(p)=xyz_solid(a,1)
-	xref(q)=xyz_solid(a,2)
+	xref_solid(p)=xyz_solid(a,1)
+	xref_solid(q)=xyz_solid(a,2)
 enddo
 !===========
 open(unit=34,file='lm_solid.out')

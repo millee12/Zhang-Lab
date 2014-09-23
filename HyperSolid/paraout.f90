@@ -20,7 +20,7 @@ write(22,80)'ASCII'
 write(22,80)'DATASET POLYDATA'
 write(22,90)'POINTS',nn_solid,'double'
 do i=1,nn_solid
-	write(22,70) dnew(nsd_solid*(i-1)+1)+xref(nsd_solid*(i-1)+1), dnew(nsd_solid*(i-1)+2)+xref(nsd_solid*(i-1)+2),0.0d0
+	write(22,70) dnew(nsd_solid*(i-1)+1)+xref_solid(nsd_solid*(i-1)+1), dnew(nsd_solid*(i-1)+2)+xref_solid(nsd_solid*(i-1)+2),0.0d0
 enddo
 write(22,95)'POLYGONS',ne_solid,ne_solid*5
 do i=1,ne_solid

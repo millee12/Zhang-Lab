@@ -1,7 +1,6 @@
 module solid_variables
   implicit none
   save
-  real(8),parameter :: dt=1.0d-3
   integer :: nsd_solid
   integer :: nn_solid
   integer :: nen_solid
@@ -45,7 +44,7 @@ module solid_variables
  real(8),parameter  :: kappa=1.6667d8
 
 real(8),allocatable :: detjac(:)
-real(8),allocatable :: xref(:)
+real(8),allocatable :: xref_solid(:)
 real(8), allocatable :: nx(:,:,:,:)
 real(8), allocatable :: shp(:,:,:)
 integer, allocatable :: lm_solid(:,:)

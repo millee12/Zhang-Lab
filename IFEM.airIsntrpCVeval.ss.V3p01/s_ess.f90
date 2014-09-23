@@ -25,26 +25,46 @@ read(11,*,end=150) el, a(1:nen_solid), bc
 				if (bc .eq. 10110) then
 					ng=ng+1
 					dof=nsd_solid*(c-1)+1
+<<<<<<< HEAD
 					p=ien(dof,el)
 					tmpgdof(ng)=p
 					ng=ng+1
 					dof=nsd_solid*(c-1)+2
 					q=ien(dof,el)
+=======
+					p=ien_solid(dof,el)
+					tmpgdof(ng)=p
+					ng=ng+1
+					dof=nsd_solid*(c-1)+2
+					q=ien_solid(dof,el)
+>>>>>>> 9ca02509ab857d8dbc3512aa29c539835bd53dbc
 					tmpgdof(ng)=q
 				else if (bc .eq. 10100) then
 					ng=ng+1
 					dof=nsd_solid*(c-1)+1
+<<<<<<< HEAD
 					p=ien(dof,el)
+=======
+					p=ien_solid(dof,el)
+>>>>>>> 9ca02509ab857d8dbc3512aa29c539835bd53dbc
 					tmpgdof(ng)=p
 				else if (bc .eq. 10010) then
 					ng=ng+1
 					dof=nsd_solid*(c-1)+2
+<<<<<<< HEAD
 					q=ien(dof,el)
+=======
+					q=ien_solid(dof,el)
+>>>>>>> 9ca02509ab857d8dbc3512aa29c539835bd53dbc
 					tmpgdof(ng)=q
 				endif
 			else
 					dof=nsd_solid*(c-1)+1
+<<<<<<< HEAD
 					p=ien(dof,el)
+=======
+					p=ien_solid(dof,el)
+>>>>>>> 9ca02509ab857d8dbc3512aa29c539835bd53dbc
 					fext(p)=fext(p)+0.0d0
 			endif
 		endif	

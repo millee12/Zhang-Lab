@@ -1,8 +1,9 @@
-  if (nsd_solid==2) then
+
+if (nsd_solid==2) then
 	if (nen_solid == 3) then
         call quad2d3n(iquad_solid, nquad_solid, xq_solid, wq_solid, nsdpad_solid, nquadpad_solid)
 	elseif (nen_solid == 4) then
-        call quad2d4n(iquad_solid, nquad_solid, xq_solid, wq_solid, nsdpad_solid, nquadpad_solid)
+!        call quad2d4n(iquad_solid, nquad_solid, xq_solid, wq_solid, nsdpad_solid, nquadpad_solid)
 	endif
   elseif (nsd_solid==3) then
 	if (nen_solid == 4) then

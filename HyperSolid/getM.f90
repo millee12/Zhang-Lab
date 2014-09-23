@@ -1,5 +1,6 @@
 subroutine getM(bf,fext)
 use solid_variables
+use run_variables, only: dt
 implicit none 
 integer :: el,al,bl,pg,qg,i,pl,ql,gp
 real(8) :: mel(nen_solid,nen_solid)
@@ -39,6 +40,7 @@ do el=1,ne_solid
         do i=1,nsd_solid
             pl=nsd_solid*(al-1)+i;
             pg=lm_solid(pl,el);
+
             fext(pg)=fext(pg)+rho*bf(i)
         enddo
     enddo

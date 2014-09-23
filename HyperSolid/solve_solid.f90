@@ -1,5 +1,6 @@
 subroutine solve_solid(solid_stress,dis,vel,acc,mlag,sel)
 use solid_variables
+use run_variables, only: dt
 implicit none
 real(8) :: fint(ndof_solid),fkin(ndof_solid)
 real(8) :: fdam(ndof_solid),fpen(ndof_solid),fext(ndof_solid)

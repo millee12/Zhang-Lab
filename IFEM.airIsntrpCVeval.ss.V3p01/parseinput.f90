@@ -171,9 +171,7 @@ end if
 	nn_sbc=nn_sbc_1*n_solid
 	node_sfcon=node_sfcon_1*n_solid
   close(8)
-
   prec(1:nump*ne_solid)=0.0d0
-
   return
 end subroutine parseinput_solid
 

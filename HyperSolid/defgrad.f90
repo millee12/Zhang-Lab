@@ -8,12 +8,12 @@ F(:,:)=0.0d0
 do a=1,nen_solid
    dof=nsd_solid*(a-1)+1
    p=lm_solid(dof,el)
-   F(1,1)=F(1,1)+(xref(p)+dis(p))*hx(a,1)
-   F(1,2)=F(1,2)+(xref(p)+dis(p))*hx(a,2)
+   F(1,1)=F(1,1)+(xref_solid(p)+dis(p))*hx(a,1)
+   F(1,2)=F(1,2)+(xref_solid(p)+dis(p))*hx(a,2)
    dof=nsd_solid*(a-1)+2
    p=lm_solid(dof,el)
-   F(2,1)=F(2,1)+(xref(p)+dis(p))*hx(a,1)
-   F(2,2)=F(2,2)+(xref(p)+dis(p))*hx(a,2)
+   F(2,1)=F(2,1)+(xref_solid(p)+dis(p))*hx(a,1)
+   F(2,2)=F(2,2)+(xref_solid(p)+dis(p))*hx(a,2)
 enddo
 detF=F(1,1)*F(2,2)-F(1,2)*F(2,2)
 !Check for element inversion

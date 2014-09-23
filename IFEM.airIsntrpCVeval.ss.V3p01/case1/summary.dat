@@ -177,3 +177,7 @@ Initial condition information
  Maximum element length... =  0.10000020E+00
  Minimum element volume... =  0.99999800E-02
  Maximum element volume... =  0.10000041E-01
+  
+ TIME STEP =            1
+  
+  physical time =   0.0100000000 s

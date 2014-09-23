@@ -38,8 +38,6 @@ DebugWait=.false.
   call nondimension
  !...echos input data
   call echoinput
-  
-
  !...switch to main routine  
   call hypo
 call mpi_finalize(ierror)
