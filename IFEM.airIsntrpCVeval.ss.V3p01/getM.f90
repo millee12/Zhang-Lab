@@ -30,8 +30,8 @@ do el=1,ne_solid
             do i=1,nsd_solid
                 pl=nsd_solid*(al-1)+i;
                 ql=nsd_solid*(bl-1)+i;
-                pg=ien_solid(pl,el);
-                qg=ien_solid(ql,el);
+                pg=lm_solid(pl,el);
+                qg=lm_solid(ql,el);
                 Mass(pg,qg)=Mass(pg,qg)+mel(al,bl);
             enddo
         enddo
@@ -39,7 +39,8 @@ do el=1,ne_solid
     do al=1,nen_solid
         do i=1,nsd_solid
             pl=nsd_solid*(al-1)+i;
-            pg=ien_solid(pl,el);
+            pg=lm_solid(pl,el);
+
             fext(pg)=fext(pg)+rho*bf(i)
         enddo
     enddo

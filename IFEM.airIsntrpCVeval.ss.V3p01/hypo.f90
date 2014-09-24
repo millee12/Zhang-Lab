@@ -154,20 +154,11 @@ if (ndelta==1) then
 ! correct the curr solid coor by solving the solid mon equations
 
 !call form_solidid12(id_solidbc,nsd_solid,nn_solid,ien_sbc,ne_sbc,nen_solid,ne_solid,solid_fem_con)
-!write(*,*) size(id_solidbc)
-!do i=1,nn_solid
-! do j=1,nsd_solid
-!    if (id_solidbc(j,i)==0) then 
-!      ng=ng+1
-!    end if
-! enddo
-!enddo 
-write(*,*) solid_stress
-write(*,*) 'SOLVE SOLID HERE'
-stop
-!call solve_solid_disp(solid_coor_init,solid_coor_curr,id_solidbc,solid_fem_con,node_sbc, &
-!                        solid_coor_pre1,solid_vel,solid_accel,ien_sbc,solid_stress,solid_bcvel,ng)
-
+if (myid==0) then
+	write(*,*) 'SOLVE SOLID HERE'
+	call solve_solid(solid_stress,solid_dis,solid_vel,solid_acc,solid_mlag)
+	call MPI_Abort (MPI_COMM_WORLD,2)
+endif 
 !--------------------------------
 ! Find the fluid nodes overlapping with solid domain
 call search_inf_re(solid_coor_curr,x,nn,nn_solid,nsd,ne_solid,nen_solid,solid_fem_con,&

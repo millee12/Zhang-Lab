@@ -132,7 +132,7 @@ enddo
 !Time Loop
 do its=1,tend
 	write(*,*) 't=', t
-    call solve_solid(solid_stress,dis,vel,acc,mlag,sel)
+    call solve_solid(solid_stress,dis,vel,acc,mlag)
 !	call paraout(tt,dis,vel,solid_con,sel,fext)
 enddo	
 end program main

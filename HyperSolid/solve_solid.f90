@@ -1,4 +1,4 @@
-subroutine solve_solid(solid_stress,dis,vel,acc,mlag,sel)
+subroutine solve_solid(solid_stress,dis,vel,acc,mlag)
 use solid_variables
 use run_variables, only: dt,its
 implicit none

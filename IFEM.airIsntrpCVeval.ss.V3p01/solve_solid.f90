@@ -1,6 +1,6 @@
-subroutine solve_solid(solid_stress,dis,vel,acc,mlag,sel)
+subroutine solve_solid(solid_stress,dis,vel,acc,mlag)
 use solid_variables
-use run_variables, only: dt
+use run_variables, only: dt,its
 implicit none
 real(8) :: fint(ndof_solid),fkin(ndof_solid)
 real(8) :: fdam(ndof_solid),fpen(ndof_solid),fext(ndof_solid)
@@ -33,7 +33,6 @@ do a=1,nn_solid
 	fext(q)=fext(q)+solid_bcforce(2,a)
 enddo
 ! Predict
-	!write(*,*) ndof_solid
     dtil=dis+dt*vel+((dt**2)/2.0d0)*(1.0d0-2.0d0*beta)*acc
     vtil=vel+((1.0d0-gamma)*dt)*acc
     	open(unit=29,file='dtil.out')
@@ -119,4 +118,6 @@ enddo
 	vel=vnew
 	acc=anew
 	mlag=mlagnew
+	!Output to Paraview
+	call paraout(its,dis,vel,ien_solid,sel,fext)
 	end subroutine solve_solid
