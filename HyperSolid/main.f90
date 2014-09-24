@@ -3,6 +3,7 @@ program main
 use solid_variables
 use mesh_convert_variables
 use meshgen_solid
+use run_variables, only: its
 implicit none
 integer :: tend=250
 real(8), allocatable :: fext(:)
@@ -129,9 +130,9 @@ do i=1,nn_solid
 	endif
 enddo
 !Time Loop
-do t=1,tend
+do its=1,tend
 	write(*,*) 't=', t
     call solve_solid(solid_stress,dis,vel,acc,mlag,sel)
-	call paraout(t,dis,vel,solid_con,sel,fext)
+!	call paraout(tt,dis,vel,solid_con,sel,fext)
 enddo	
 end program main
