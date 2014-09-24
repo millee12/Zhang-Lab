@@ -50,10 +50,10 @@ do el=1,ne_solid
        	sel(:,el)=	sel(:,el)+(1.0d0/nquad_solid)*pk2(:)
 	enddo
 	do dof1=1,eldof_solid
-		p=lm_solid(dof1,el)
+		p=ien_solid(dof1,el)
 		fint(p)=fint(p)+sint(dof1)
 		do dof2=1,eldof_solid
-			q=lm_solid(dof2,el)
+			q=ien_solid(dof2,el)
 			kt(p,q)=kt(p,q)+kl(dof1,dof2)+knl(dof1,dof2)
 		enddo
 	enddo

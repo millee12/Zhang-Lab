@@ -1,16 +1,14 @@
-subroutine solve_solid(fext,dis,vel,acc,mlag,sel)
+subroutine solve_solid(solid_stress,dis,vel,acc,mlag,sel)
 use solid_variables
-<<<<<<< HEAD
-=======
 use run_variables, only: dt
->>>>>>> 9ca02509ab857d8dbc3512aa29c539835bd53dbc
 implicit none
-real(8) :: fint(ndof_solid),fkin(ndof_solid),fdam(ndof_solid),fpen(ndof_solid)
+real(8) :: fint(ndof_solid),fkin(ndof_solid)
+real(8) :: fdam(ndof_solid),fpen(ndof_solid),fext(ndof_solid)
 real(8) :: CMR(3,3),sel(3,ne_solid)
 integer :: i,j,gp,a,b,p,q,dof1,dof2,el
 real(8) :: ka(neq_solid,neq_solid),kt(ndof_solid,ndof_solid)
 real(8) :: kl(eldof_solid,eldof_solid),knl(eldof_solid,eldof_solid),ssuper(4,4)
-real(8) :: rf(neq_solid),fext(ndof_solid)
+real(8) :: rf(neq_solid)
 real(8) :: dnew(ndof_solid),vnew(ndof_solid),anew(ndof_solid)
 real(8) :: dtil(ndof_solid),vtil(ndof_solid)
 real(8) :: res
@@ -19,11 +17,21 @@ real(8) :: mlagnew(nsol_ebc)
 real(8) :: rpen(nsol_ebc)
 real(8) :: dis(ndof_solid),vel(ndof_solid),acc(ndof_solid),mlag(nsol_ebc)
 !=====
-integer ien_sbc(ne_sbc,nen_solid+2)
 real(8) solid_stress(nsd_solid*2,nn_solid)
+real(8) solid_bcforce(nsd_solid,nn_solid)
 !-------------------------------------------------
 real(8) sq_solid(0:3,8,8)
 integer iq
+
+call apply_2ndbc_solid2d(dis,ien_sbc,ne_sbc,solid_bcforce,solid_stress)
+write(*,*) 'FX= ', sum(solid_bcforce(1,:)),'FY= ', sum(solid_bcforce(2,:))
+fext(:)=0.0d0
+do a=1,nn_solid
+	p=nsd_solid*(a-1)+1
+	q=nsd_solid*(a-1)+2
+	fext(p)=fext(p)+solid_bcforce(1,a)
+	fext(q)=fext(q)+solid_bcforce(2,a)
+enddo
 ! Predict
 	!write(*,*) ndof_solid
     dtil=dis+dt*vel+((dt**2)/2.0d0)*(1.0d0-2.0d0*beta)*acc
