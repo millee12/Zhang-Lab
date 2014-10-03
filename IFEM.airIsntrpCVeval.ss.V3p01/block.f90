@@ -28,7 +28,6 @@ subroutine block(xloc, dloc, doloc, p, q, hk, ien, f_fluids,rngface, f_stress,ne
   real* 8 eft0,det,effd,effm,effc
   real* 8 sh(0:nsd,nen),ph(0:nsd,nen)
   real* 8 xr(nsd,nsd),cf(nsd,nsd),sx(nsd,nsd)
-
   real* 8 f_stress(nsd,nsd,nn)
 
   real* 8 drt(ndf),drs(ndf)
@@ -43,7 +42,6 @@ subroutine block(xloc, dloc, doloc, p, q, hk, ien, f_fluids,rngface, f_stress,ne
   real* 8 dtinv,oma,ama
   integer inl, ie, isd, iq, node,jsd
   integer ieface,irng, rngface(neface,ne) !,inface
-
   real* 8 f_fluids(nsd,nn)
   real* 8 fnode(nsd,nen),fq(nsd)
 
@@ -63,8 +61,7 @@ subroutine block(xloc, dloc, doloc, p, q, hk, ien, f_fluids,rngface, f_stress,ne
 	integer ien_local(ne_local) ! subregion-->whole region element index
 	integer ie_local ! loop parameter
 
-
-
+stop
 
   dtinv = 1.0/dt
   if(steady) dtinv = 0.0
@@ -107,6 +104,7 @@ subroutine block(xloc, dloc, doloc, p, q, hk, ien, f_fluids,rngface, f_stress,ne
 ! 2 do the subscribition after the elements loop
 ! Xingshi 09/15/2008
 !===================================================
+stop
   do ie_local=1,ne_local		! loop over subregion elements
 	ie=ien_local(ie_local)
      do inl=1,nen	
@@ -121,11 +119,7 @@ subroutine block(xloc, dloc, doloc, p, q, hk, ien, f_fluids,rngface, f_stress,ne
 !-----------------------------------------------------------------------------
                local_den(inl)=fdensity(ien(inl,ie))
 	 enddo
-
 	 hg = hk(ie)
-
-
-	 
 
 	 do iq=1,nquad  ! loop over the quadrature points in each element 
 !...  calculate the shape function and the weight at quad point

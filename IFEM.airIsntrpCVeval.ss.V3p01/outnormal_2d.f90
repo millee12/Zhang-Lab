@@ -1,4 +1,5 @@
 subroutine outnormal_2d(x_solid,edge_el,normal,nsd_solid,nen_solid,len)
+implicit none
 ! calculate the outward normal for the edge on the solid interface
 integer nsd_solid ! dimension of solid
 integer nen_solid ! number of nodes in solid element

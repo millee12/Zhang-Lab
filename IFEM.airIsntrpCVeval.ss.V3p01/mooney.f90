@@ -4,6 +4,8 @@ real(8) :: t13,t14,t12,t23,t43,t32,t53,t73,t49,t83,t109
 real(8) :: F(nsd_solid,nsd_solid), RCG(nsd_solid,nsd_solid),pk2(3),CMR(3,3),ssuper(4,4)
 real(8) :: I1,I2,I3,dI1(3),dI2(3),dI3(3),ddI1(3,3),ddI2(3,3),ddI3(3,3)
 real(8) :: J1,J2,J3,dJ1(3),dJ2(3),dJ3(3),ddJ1(3,3),ddJ2(3,3),ddJ3(3,3)
+!write(*,*) 'rc1= ',rc1
+!stop
 ! Calculate stress and stiffness
 t13=-1.0d0/3.0
 t14=-1.0d0/4.0

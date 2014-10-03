@@ -14,7 +14,7 @@ ndf =     3		! # of degree of freedom
 nsd =     2		! # of dimension
 iquad =   2		! # of gausian points per element
 nit =      6		! # of iteration per time step
-nts =      500		! # of time steps
+nts =      200		! # of time steps
 ntsbout =  1		! output frequency
 idisk =    00 		! ...
 inner =    80		! # of inner loop for GMRES
@@ -40,7 +40,7 @@ fix =     0.0  		! top BC vel_y
 fix =     -999 		  !top Pre
 
 fix =    4  		! left BC
-fix =   10.0  		! left BC vel_x
+fix =   20.0  		! left BC vel_x
 fix =   0.0  		! left BC vel_y
 fix =    -999  		 !left Pre
 
@@ -114,7 +114,7 @@ Control information
  Nodes........................(nn) =    1701
  Elements.....................(ne) =    1600
  Total integration points..(nquad) =       4
- Time steps....................(nts) =   500
+ Time steps....................(nts) =   200
  Iterations....................(nit) =     6
  Time steps b/output.......(ntsbout) =     1
  Space dimensions..............(nsd) =     2
@@ -165,7 +165,7 @@ Boundary condition information
  Boundary no.  1       0.000    0.000 -999.000
  Boundary no.  2    -999.000 -999.000 -999.000
  Boundary no.  3       0.000    0.000 -999.000
- Boundary no.  4      10.000    0.000 -999.000
+ Boundary no.  4      20.000    0.000 -999.000
 
 Initial condition information
 -----------------------------
@@ -177,3 +177,299 @@ Initial condition information
  Maximum element length... =  0.10000020E+00
  Minimum element volume... =  0.99999800E-02
  Maximum element volume... =  0.10000041E-01
+  
+ TIME STEP =            1
+  
+ physical time =   0.0100000000 s
+Iteration  1:   0.9360251E+01 0.1120799E+04
+Iteration  2:   0.9148181E+01 0.1114018E+03
+Iteration  3:   0.8815674E+00 0.2454821E+02
+Iteration  4:   0.4011341E-01 0.6081881E+01
+Iteration  5:   0.3138233E-02 0.1511122E+01
+Iteration  6:   0.3976125E-03 0.2085280E+00
+  
+ TIME STEP =            2
+  
+ physical time =   0.0200000000 s
+Iteration  1:   0.8130883E+01 0.9618199E+03
+Iteration  2:   0.1115226E+02 0.1066606E+03
+Iteration  3:   0.7562279E+00 0.1388937E+02
+Iteration  4:   0.5139193E-01 0.8328691E+00
+Iteration  5:   0.6119439E-03 0.2729570E+00
+Iteration  6:   0.1255067E-03 0.4800938E-01
+  
+ TIME STEP =            3
+  
+ physical time =   0.0300000000 s
+Iteration  1:   0.8221411E+01 0.9713111E+03
+Iteration  2:   0.1118103E+02 0.1102084E+03
+Iteration  3:   0.7233639E+00 0.1552753E+02
+Iteration  4:   0.5226601E-01 0.3558303E+01
+Iteration  5:   0.2492321E-02 0.9931534E+00
+Iteration  6:   0.5485591E-03 0.2962177E+00
+  
+ TIME STEP =            4
+  
+ physical time =   0.0400000000 s
+Iteration  1:   0.8340914E+01 0.9852634E+03
+Iteration  2:   0.1118481E+02 0.1157089E+03
+Iteration  3:   0.7196697E+00 0.1674694E+02
+Iteration  4:   0.5283021E-01 0.4635124E+01
+Iteration  5:   0.3959427E-02 0.1606016E+01
+Iteration  6:   0.8855285E-03 0.3359557E+00
+  
+ TIME STEP =            5
+  
+ physical time =   0.0500000000 s
+Iteration  1:   0.8501661E+01 0.1002555E+04
+Iteration  2:   0.1118795E+02 0.1206454E+03
+Iteration  3:   0.7127164E+00 0.1663085E+02
+Iteration  4:   0.5302139E-01 0.5373776E+01
+Iteration  5:   0.3473541E-02 0.1466285E+01
+Iteration  6:   0.8948220E-03 0.3469112E+00
+  
+ TIME STEP =            6
+  
+ physical time =   0.0600000000 s
+Iteration  1:   0.8691000E+01 0.1022617E+04
+Iteration  2:   0.1118829E+02 0.1241814E+03
+Iteration  3:   0.7050066E+00 0.1743368E+02
+Iteration  4:   0.5235955E-01 0.5618591E+01
+Iteration  5:   0.2459457E-02 0.8192712E+00
+Iteration  6:   0.3732787E-03 0.2077082E+00
+  
+ TIME STEP =            7
+  
+ physical time =   0.0700000000 s
+Iteration  1:   0.8901330E+01 0.1044680E+04
+Iteration  2:   0.1119008E+02 0.1266215E+03
+Iteration  3:   0.7003130E+00 0.1806929E+02
+Iteration  4:   0.5181863E-01 0.3879908E+01
+Iteration  5:   0.2129344E-02 0.9404418E+00
+Iteration  6:   0.5005365E-04 0.1852996E-01
+  
+ TIME STEP =            8
+  
+ physical time =   0.0800000000 s
+Iteration  1:   0.9139664E+01 0.1067608E+04
+Iteration  2:   0.1119425E+02 0.1279862E+03
+Iteration  3:   0.6984816E+00 0.1716601E+02
+Iteration  4:   0.5238542E-01 0.5408051E+01
+Iteration  5:   0.1700402E-02 0.7881064E+00
+Iteration  6:   0.1392080E-03 0.5047282E-01
+  
+ TIME STEP =            9
+  
+ physical time =   0.0900000000 s
+Iteration  1:   0.9427277E+01 0.1090504E+04
+Iteration  2:   0.1119899E+02 0.1274892E+03
+Iteration  3:   0.6986691E+00 0.2647035E+02
+Iteration  4:   0.5158679E-01 0.3978238E+01
+Iteration  5:   0.1707722E-02 0.5455032E+00
+Iteration  6:   0.7512597E-04 0.2962972E-01
+  
+ TIME STEP =           10
+  
+ physical time =   0.1000000000 s
+Iteration  1:   0.9787357E+01 0.1112748E+04
+Iteration  2:   0.1120296E+02 0.1271152E+03
+Iteration  3:   0.6956915E+00 0.2936181E+02
+Iteration  4:   0.5168549E-01 0.3554882E+01
+Iteration  5:   0.2903097E-02 0.1186759E+01
+Iteration  6:   0.1235743E-03 0.5081805E-01
+  
+ TIME STEP =           11
+  
+ physical time =   0.1100000000 s
+Iteration  1:   0.1023571E+02 0.1133908E+04
+Iteration  2:   0.1120632E+02 0.1260270E+03
+Iteration  3:   0.6929141E+00 0.2901764E+02
+Iteration  4:   0.5118079E-01 0.3058377E+01
+Iteration  5:   0.3444103E-02 0.1326669E+01
+Iteration  6:   0.9307424E-03 0.4873769E+00
+  
+ TIME STEP =           12
+  
+ physical time =   0.1200000000 s
+Iteration  1:   0.1077692E+02 0.1153721E+04
+Iteration  2:   0.1120953E+02 0.1238398E+03
+Iteration  3:   0.6934136E+00 0.3225784E+02
+Iteration  4:   0.5255344E-01 0.5349566E+01
+Iteration  5:   0.4825903E-02 0.1852371E+01
+Iteration  6:   0.8344367E-03 0.4487273E+00
+  
+ TIME STEP =           13
+  
+ physical time =   0.1300000000 s
+Iteration  1:   0.1139394E+02 0.1171768E+04
+Iteration  2:   0.1121338E+02 0.1199023E+03
+Iteration  3:   0.6954281E+00 0.3405629E+02
+Iteration  4:   0.5376262E-01 0.7364273E+01
+Iteration  5:   0.5198038E-02 0.2068276E+01
+Iteration  6:   0.2780255E-03 0.9644347E-01
+  
+ TIME STEP =           14
+  
+ physical time =   0.1400000000 s
+Iteration  1:   0.1203691E+02 0.1187106E+04
+Iteration  2:   0.1121936E+02 0.1138501E+03
+Iteration  3:   0.6966970E+00 0.3199807E+02
+Iteration  4:   0.5910783E-01 0.1431599E+02
+Iteration  5:   0.2840963E-02 0.1264841E+01
+Iteration  6:   0.6101933E-03 0.2822060E+00
+  
+ TIME STEP =           15
+  
+ physical time =   0.1500000000 s
+Iteration  1:   0.1264622E+02 0.1198315E+04
+Iteration  2:   0.1122792E+02 0.1069887E+03
+Iteration  3:   0.6949165E+00 0.3288655E+02
+Iteration  4:   0.6305197E-01 0.1932706E+02
+Iteration  5:   0.1053308E-02 0.1982032E+00
+Iteration  6:   0.1533976E-03 0.6260464E-01
+  
+ TIME STEP =           16
+  
+ physical time =   0.1600000000 s
+Iteration  1:   0.1319152E+02 0.1204530E+04
+Iteration  2:   0.1123945E+02 0.1010041E+03
+Iteration  3:   0.6948395E+00 0.3292667E+02
+Iteration  4:   0.6325302E-01 0.1915895E+02
+Iteration  5:   0.2656358E-02 0.1081037E+01
+Iteration  6:   0.6971277E-03 0.2154639E+00
+  
+ TIME STEP =           17
+  
+ physical time =   0.1700000000 s
+Iteration  1:   0.1368525E+02 0.1206243E+04
+Iteration  2:   0.1125143E+02 0.9693775E+02
+Iteration  3:   0.6941170E+00 0.3168434E+02
+Iteration  4:   0.6388050E-01 0.1741436E+02
+Iteration  5:   0.6907154E-02 0.3443035E+01
+Iteration  6:   0.8866153E-03 0.3051919E+00
+  
+ TIME STEP =           18
+  
+ physical time =   0.1800000000 s
+Iteration  1:   0.1417479E+02 0.1204836E+04
+Iteration  2:   0.1126165E+02 0.9462951E+02
+Iteration  3:   0.6933821E+00 0.3387430E+02
+Iteration  4:   0.6180667E-01 0.1759176E+02
+Iteration  5:   0.1083045E-02 0.2690246E+00
+Iteration  6:   0.2857501E-03 0.9739859E-01
+  
+ TIME STEP =           19
+  
+ physical time =   0.1900000000 s
+Iteration  1:   0.1469798E+02 0.1201778E+04
+Iteration  2:   0.1127005E+02 0.9343569E+02
+Iteration  3:   0.6919149E+00 0.3499061E+02
+Iteration  4:   0.6030103E-01 0.1508822E+02
+Iteration  5:   0.1535675E-02 0.4664037E+00
+Iteration  6:   0.5554430E-03 0.2989008E+00
+  
+ TIME STEP =           20
+  
+ physical time =   0.2000000000 s
+Iteration  1:   0.1525378E+02 0.1198002E+04
+Iteration  2:   0.1127672E+02 0.9270485E+02
+Iteration  3:   0.6907758E+00 0.3864372E+02
+Iteration  4:   0.5628345E-01 0.9215927E+01
+Iteration  5:   0.1055447E-02 0.3596111E+00
+Iteration  6:   0.3459776E-03 0.1804473E+00
+  
+ TIME STEP =           21
+  
+ physical time =   0.2100000000 s
+Iteration  1:   0.1583413E+02 0.1194014E+04
+Iteration  2:   0.1128071E+02 0.9219934E+02
+Iteration  3:   0.6893551E+00 0.3824154E+02
+Iteration  4:   0.5547088E-01 0.7905380E+01
+Iteration  5:   0.8630510E-03 0.3689436E+00
+Iteration  6:   0.1463529E-03 0.6471612E-01
+  
+ TIME STEP =           22
+  
+ physical time =   0.2200000000 s
+Iteration  1:   0.1643591E+02 0.1189974E+04
+Iteration  2:   0.1128236E+02 0.9178950E+02
+Iteration  3:   0.6877960E+00 0.3680594E+02
+Iteration  4:   0.5523952E-01 0.7519047E+01
+Iteration  5:   0.1018944E-02 0.4343648E+00
+Iteration  6:   0.2759728E-03 0.9967143E-01
+  
+ TIME STEP =           23
+  
+ physical time =   0.2300000000 s
+Iteration  1:   0.1705098E+02 0.1185863E+04
+Iteration  2:   0.1128217E+02 0.9149699E+02
+Iteration  3:   0.6870874E+00 0.3475941E+02
+Iteration  4:   0.5566980E-01 0.8576279E+01
+Iteration  5:   0.1053631E-02 0.3791751E+00
+Iteration  6:   0.3721600E-03 0.1774078E+00
+  
+ TIME STEP =           24
+  
+ physical time =   0.2400000000 s
+Iteration  1:   0.1767808E+02 0.1181605E+04
+Iteration  2:   0.1128062E+02 0.9132070E+02
+Iteration  3:   0.6866760E+00 0.3335573E+02
+Iteration  4:   0.5599296E-01 0.9727297E+01
+Iteration  5:   0.3933889E-03 0.1011673E+00
+Iteration  6:   0.1066640E-03 0.5453970E-01
+  
+ TIME STEP =           25
+  
+ physical time =   0.2500000000 s
+Iteration  1:   0.1833713E+02 0.1177076E+04
+Iteration  2:   0.1128149E+02 0.9126579E+02
+Iteration  3:   0.6876814E+00 0.3158847E+02
+Iteration  4:   0.5618625E-01 0.1009830E+02
+Iteration  5:   0.5293721E-03 0.1743380E+00
+Iteration  6:   0.1403198E-03 0.6984662E-01
+  
+ TIME STEP =           26
+  
+ physical time =   0.2600000000 s
+Iteration  1:   0.1905487E+02 0.1172173E+04
+Iteration  2:   0.1129018E+02 0.9130913E+02
+Iteration  3:   0.6900297E+00 0.2769765E+02
+Iteration  4:   0.5841413E-01 0.1358891E+02
+Iteration  5:   0.1615206E-02 0.4880076E+00
+Iteration  6:   0.7113451E-03 0.3876184E+00
+  
+ TIME STEP =           27
+  
+ physical time =   0.2700000000 s
+Iteration  1:   0.1986074E+02 0.1166969E+04
+Iteration  2:   0.1131344E+02 0.9155350E+02
+Iteration  3:   0.6943176E+00 0.2700716E+02
+Iteration  4:   0.5985573E-01 0.1534580E+02
+Iteration  5:   0.1975310E-02 0.7745428E+00
+Iteration  6:   0.6121300E-03 0.1970128E+00
+  
+ TIME STEP =           28
+  
+ physical time =   0.2800000000 s
+Iteration  1:   0.2079063E+02 0.1161430E+04
+Iteration  2:   0.1135777E+02 0.9195368E+02
+Iteration  3:   0.7003346E+00 0.2921829E+02
+Iteration  4:   0.5683719E-01 0.9082671E+01
+Iteration  5:   0.8341075E-02 0.4243026E+01
+Iteration  6:   0.9364855E-03 0.2672261E+00
+  
+ TIME STEP =           29
+  
+ physical time =   0.2900000000 s
+Iteration  1:   0.2188691E+02 0.1155612E+04
+Iteration  2:   0.1143139E+02 0.9265467E+02
+Iteration  3:   0.7072200E+00 0.3097558E+02
+Iteration  4:   0.5484626E-01 0.7130257E+01
+Iteration  5:   0.9011984E-02 0.3363212E+01
+Iteration  6:   0.3020853E-02 0.1354211E+01
+  
+ TIME STEP =           30
+  
+ physical time =   0.3000000000 s
+Iteration  1:   0.2319113E+02 0.1149545E+04
+Iteration  2:   0.1154217E+02 0.9381825E+02

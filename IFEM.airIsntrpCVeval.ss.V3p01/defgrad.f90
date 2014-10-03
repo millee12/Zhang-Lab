@@ -7,11 +7,11 @@ integer :: a,p
 F(:,:)=0.0d0
 do a=1,nen_solid
    dof=nsd_solid*(a-1)+1
-   p=ien_solid(dof,el)
+   p=lm_solid(dof,el)
    F(1,1)=F(1,1)+(xref_solid(p)+dis(p))*hx(a,1)
    F(1,2)=F(1,2)+(xref_solid(p)+dis(p))*hx(a,2)
    dof=nsd_solid*(a-1)+2
-   p=ien_solid(dof,el)
+   p=lm_solid(dof,el)
    F(2,1)=F(2,1)+(xref_solid(p)+dis(p))*hx(a,1)
    F(2,2)=F(2,2)+(xref_solid(p)+dis(p))*hx(a,2)
 enddo

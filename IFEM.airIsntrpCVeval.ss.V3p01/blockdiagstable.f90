@@ -28,7 +28,6 @@ subroutine block(xloc, dloc, doloc, p, q_p, hk, ien, f_fluids,rngface, f_stress,
   real* 8 eft0,det,effd,effm,effc
   real* 8 sh(0:nsd,nen),ph(0:nsd,nen)
   real* 8 xr(nsd,nsd),cf(nsd,nsd),sx(nsd,nsd)
-
   real* 8 f_stress(nsd,nsd,nn)
 
   real* 8 drt(ndf),drs(ndf)
@@ -43,7 +42,6 @@ subroutine block(xloc, dloc, doloc, p, q_p, hk, ien, f_fluids,rngface, f_stress,
   real* 8 dtinv,oma,ama
   integer inl, ie, isd, iq, node,jsd
   integer ieface,irng, rngface(neface,ne) !,inface
-
   real* 8 f_fluids(nsd,nn)
   real* 8 fnode(nsd,nen),fq(nsd)
   integer nn_local
@@ -70,6 +68,7 @@ subroutine block(xloc, dloc, doloc, p, q_p, hk, ien, f_fluids,rngface, f_stress,
         integer ie_local ! loop parameter
 	integer icount
 !--------------------------------------------------
+stop
   q_res_a(1:nsd,1:nen) = 0
   q_p(1:ndf,1:nn) = 0
   q_d(1:ndf,1:nen) = 1 !set each ndf for each node as 1

@@ -97,7 +97,6 @@ end do
 
 include "reconstruct_tauij.f90"
 
-
 !=================================================
 !===================================================
 ! f_fluids is actually the FSI force at fluid nodes,

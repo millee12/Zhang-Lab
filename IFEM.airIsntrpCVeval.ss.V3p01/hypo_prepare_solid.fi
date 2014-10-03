@@ -3,7 +3,10 @@ if (nsd_solid==2) then
 	if (nen_solid == 3) then
         call quad2d3n(iquad_solid, nquad_solid, xq_solid, wq_solid, nsdpad_solid, nquadpad_solid)
 	elseif (nen_solid == 4) then
-!        call quad2d4n(iquad_solid, nquad_solid, xq_solid, wq_solid, nsdpad_solid, nquadpad_solid)
+!	write(*,*) 'calling quad'
+!	write(*,*) iquad_solid,nquad_solid,xq_solid,wq_solid,nsdpad_solid,nquadpad_solid
+        !call quad2d4n(iquad_solid,nquad_solid,xq_solid,wq_solid,nsdpad_solid,nquadpad_solid)
+	write(*,*) 'warning: removed call to quad2d4n'
 	endif
   elseif (nsd_solid==3) then
 	if (nen_solid == 4) then
@@ -12,7 +15,6 @@ if (nsd_solid==2) then
         call quad3d8n(iquad_solid, nquad_solid, xq_solid, wq_solid, nsdpad_solid, nquadpad_solid)
 	endif
   endif
-
   allocate(solid_fem_con_1(ne_solid_1,nen_solid),stat=error_id)
   allocate(coor_1(nn_solid_1,nsd_solid),stat=error_id)
 !======================================================
@@ -21,11 +23,20 @@ if (nsd_solid==2) then
 !======================================================
  !...read element connectivity for one structure
   call readien_solid(solid_fem_con_1,ne_solid_1,nen_solid,mtype1)
+!write(*,*) 'passed readien_solid'
+allocate(ien_solid(ne_solid_1,nen_solid))
+ien_solid(:,:)=solid_fem_con_1(:,:)
+!write(*,*) 'ien= '
+!do i=1,ne_solid
+!write(*,*) solid_fem_con_1(i,:)
+!enddo
  !...read coordinates for one structure
   call readx_solid(coor_1,nn_solid_1,nsd_solid)
-
+!write(*,*) 'passed readx_solid'
 !=======================================================
   call read_solidbc(ien_sbc_1)
+!write(*,*) 'ien_sbc_1= ',ien_sbc_1
+!write(*,*)'ne_sbc_1= ', ne_sbc_1
   call read_solidnodebc(node_sbc_1)
 ! read in solid interface elements and nodes
 
@@ -39,6 +50,7 @@ if (nsd_solid==2) then
 if (node_sfcon .ne. 0) then
   call read_sfcon(sfcon_1,node_sfcon_1)
 end if
+!write(*,*) 'passed read_sfcon'
 !---------------------------------------------------------
  !...scale structure
   do i=1,nsd_solid
@@ -52,6 +64,8 @@ end if
 	enddo
     solid_fem_con(ne_solid_1*(i-1)+1:ne_solid_1*i,1:nen_solid) = solid_fem_con_1(1:ne_solid_1,1:nen_solid) + (i-1)*nn_solid_1
   enddo
+!write(*,*) 'passed scale and copy' 
+!write(*,*) 'n_solid=',n_solid
 !------------------------------------------------------------
 do i=1,n_solid
    sfcon(node_sfcon_1*(i-1)+1:node_sfcon_1*i)=sfcon_1(1:node_sfcon_1)
@@ -59,6 +73,7 @@ do i=1,n_solid
    ien_sbc(ne_sbc_1*(i-1)+1:ne_sbc_1*i,:)=ien_sbc_1(1:ne_sbc_1,:)
    mtype(ne_solid_1*(i-1)+1:ne_solid_1*i) = mtype1(1:ne_solid_1)
 enddo
+!write(*,*) 'passed single solid'
 !===========================================================================================
 ! For special case when we want to have 2 solid symeric with respect to the centre line  
 if (n_solid == 2) then
@@ -116,7 +131,7 @@ end if
   deallocate(solid_fem_con_1,stat=error_id)
   deallocate(coor_1,stat=error_id)
   deallocate(shift,stat=error_id)  
-
+!write(*,*) 'passed deallocate'
  !...initialize arrays
   solid_coor_curr(1:nsd_solid,1:nn_solid) = solid_coor_init(1:nsd_solid,1:nn_solid)
   solid_force_FSI(1:nsd_solid,1:nn_solid) = 0.0d0
@@ -129,5 +144,8 @@ end if
   if (ninit .eq. 1) then
      call r_sreadinit(solid_coor_init,solid_coor_curr)
   endif
-
-
+!write(*,*) 'passed initialize'
+!write(*,*) 'coors.= '
+!write(*,*) solid_coor_init
+allocate(xyz_solid(nsd_solid,nn_solid))
+xyz_solid(:,:)=solid_coor_init(:,:)

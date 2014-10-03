@@ -40,8 +40,9 @@ integer fnode
 
 
 data_fluid(:,:)=0.0
-!data_solid(:,:)=0.0
+data_solid(:,:)=0.0
 if (nsd == 2) then
+!write(*,*) x_solid
 call solid_normint(x_solid,nsd,nn_solid,ien_sbc,ne_sbc,nen_solid,&
 			ien_solid,ne_solid,data_solid)
 else
@@ -60,7 +61,7 @@ end if
               data_fluid(1:nsd,pt) = data_fluid(1:nsd,pt) + data_solid(1:nsd,inn) * shrknode(icnn,inn)
               enddo
         enddo
-	write(*,*) 'area of solid', sum(data_solid(2,:))
-	write(*,*) 'area of solid in fluid'
+	!write(*,*) 'area of solid', sum(data_solid(2,:))
+	!write(*,*) 'area of solid in fluid'
 return
 end 

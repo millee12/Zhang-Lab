@@ -38,7 +38,6 @@ real(8) stress_tmp(nsd,nsd)
 
 solid_bcforce(:,:)=0.0d0
 
-
 if (nen_solid == 4) then
 allocate (x(nsd,3))
 w=1.0/3.0
