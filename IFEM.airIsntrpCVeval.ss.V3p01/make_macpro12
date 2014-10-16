@@ -29,7 +29,8 @@ rkpm_nodevolume.o rkpm_init.o getinf_rkpm.o search_inf_re.o \
 form_solidid.o \
 setsolid_id.o res_solid.o block_solid_res.o apply_2ndbc_solid.o apply_2ndbc_solid2d.o \
 blockcvoutput.o normal2d_gen.o lumpmassmatrix.o mooney.o getB.o defgrad.o \
-s_ess.o s_int.o svshp.o getM.o s_dam.o s_pen.o s_kin.o paraout_solid.o paraout_fluid.o solve_solid.o 
+s_ess.o s_int.o svshp.o getM.o s_dam.o s_pen.o s_kin.o paraout_vsolid.o paraout_solid.o paraout_fluid.o \
+solve_solid.o get_fsi.o 
 IFEM: $(OBJ)
 	mpif90 -g -O2 -o IFEM $(OBJ) $(LIBS)
 .f90.o:

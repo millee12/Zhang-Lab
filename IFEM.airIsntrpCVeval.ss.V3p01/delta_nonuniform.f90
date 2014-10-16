@@ -242,7 +242,7 @@ subroutine getinf(inf,ninf,x,xna,adist,nn,nsd,maxconn)
      write (*,*) "Too many influence nodes!"
      write (*,*) ninf
   elseif (ninf.lt.4) then
-     write (*,*) "Not enough influence nodes!*delta"
+     write (*,*) "Not enough influence nodes!"
      write (*,*) ninf
   endif
 

@@ -1,6 +1,6 @@
-subroutine solve_solid(ien_sbc,solid_stress,solid_dis,solid_vel,solid_acc,mlag,bc_vel,solid_coor_curr)
+subroutine solve_solid(ien_sbc,solid_stress,solid_dis,solid_vel,solid_acc,mlag,bc_vel,solid_coor_curr,sel)
 use solid_variables
-use run_variables, only: dt,its
+use run_variables, only: dt,its,ntsbout
 use mpi_variables
 implicit none
 real(8) :: fint(ndof_solid),fkin(ndof_solid)
@@ -28,6 +28,7 @@ real(8) bc_vel(nsd_solid,nn_solid)
 integer :: ien_sbc(ne_sbc,nen_solid+2)
 !-------------------------------------------------
 real(8) sq_solid(0:3,8,8)
+real(8) ffsi(nsd_solid,nn_solid)
 integer iq
 !Convert to single Column
 do a=1,nn_solid
@@ -38,9 +39,6 @@ do a=1,nn_solid
 		acc(p)=solid_acc(i,a)
 	enddo
 enddo
-
-!solid_stress(1,:)=1.0d0
-!write(*,*) 'solid_stress= ', solid_stress
 call apply_2ndbc_solid2d(dis,ien_sbc,ne_sbc,solid_bcforce,solid_stress)
 if (myid==0) then
 write(*,*) 'FX= ', sum(solid_bcforce(1,:)),'FY= ', sum(solid_bcforce(2,:))
@@ -105,11 +103,8 @@ do a=1,nn_solid
 		solid_dis(i,a)=dnew(p)
 		solid_vel(i,a)=vnew(p)
 		solid_acc(i,a)=anew(p)
+		!ffsi(i,a)=-fint(p)
 	enddo
 enddo
 mlag=mlagnew
-!Output to Paraview
-if (myid==0) then
-	call paraout_solid(its,dnew,vnew,ien_solid,sel,fext)
-endif
 end subroutine solve_solid
