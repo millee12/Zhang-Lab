@@ -49,6 +49,7 @@ real(8),allocatable :: detjac(:)
 real(8),allocatable :: xref_solid(:)
 real(8), allocatable :: nx(:,:,:,:)
 real(8), allocatable :: shp(:,:,:)
+real(8), allocatable :: shp2(:,:)
 integer, allocatable :: lm_solid(:,:)
 integer, allocatable :: ien_solid(:,:)
 

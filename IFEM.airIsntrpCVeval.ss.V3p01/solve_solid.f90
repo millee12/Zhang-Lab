@@ -1,4 +1,5 @@
-subroutine solve_solid(ien_sbc,solid_stress,solid_dis,solid_vel,solid_acc,mlag,bc_vel,solid_coor_curr,sel)
+subroutine solve_solid(ien_sbc,solid_stress,solid_dis,solid_vel,solid_acc&
+,mlag,solid_coor_curr,sel,solid_fint,solid_fkin)
 use solid_variables
 use run_variables, only: dt,its,ntsbout
 use mpi_variables
@@ -24,7 +25,8 @@ real(8) :: solid_acc(nsd_solid,nn_solid)
 real(8) solid_coor_curr(nsd_solid,nn_solid)
 real(8) solid_stress(nsd_solid*2,nn_solid)
 real(8) solid_bcforce(nsd_solid,nn_solid)
-real(8) bc_vel(nsd_solid,nn_solid)
+real(8) solid_fint(nsd_solid,nn_solid)
+real(8) solid_fkin(nsd_solid,nn_solid)
 integer :: ien_sbc(ne_sbc,nen_solid+2)
 !-------------------------------------------------
 real(8) sq_solid(0:3,8,8)
@@ -103,7 +105,8 @@ do a=1,nn_solid
 		solid_dis(i,a)=dnew(p)
 		solid_vel(i,a)=vnew(p)
 		solid_acc(i,a)=anew(p)
-		!ffsi(i,a)=-fint(p)
+		solid_fint(i,a)=fint(p)
+		solid_fkin(i,a)=fkin(p)
 	enddo
 enddo
 mlag=mlagnew

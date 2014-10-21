@@ -43,6 +43,10 @@ real(8) time_com
 real(8) pin_s
 ! integer ng !number of solid BCs (EM 9/15/14)
 ! real(8) :: solid_mlag(nsd_solid,nn_solid)
+real(8), allocatable :: solid_fint(:,:)
+real(8), allocatable :: solid_fkin(:,:)
+real(8), allocatable :: vsolid_fint(:,:)
+real(8), allocatable :: vsolid_fkin(:,:)
 real(8), allocatable :: solid_trac(:,:)
 real(8), allocatable :: solid_vel(:,:)
 real(8), allocatable :: solid_dis(:,:)
@@ -50,6 +54,8 @@ real(8), allocatable :: solid_acc(:,:)
 real(8), allocatable :: solid_mlag(:)
 real(8), allocatable :: solid_stress(:,:)
 real(8), allocatable :: vsolid_vel(:,:)
+real(8), allocatable :: vsolid_vel_old(:,:)
+real(8), allocatable :: vsolid_acc(:,:)
 real(8), allocatable :: ffsi_vs(:,:)
 !============================
 character(len=14) filename
@@ -134,13 +140,19 @@ call svshp
 !save mass matrix and kinematic stiffness and add body forces
 call getM
 !=================================================================
-allocate(solid_dis(nn_solid,nsd_solid))
-allocate(solid_vel(nn_solid,nsd_solid))
+allocate(solid_dis(nsd_solid,nn_solid))
+allocate(solid_vel(nsd_solid,nn_solid))
+allocate(solid_acc(nsd_solid,nn_solid))
 allocate(solid_mlag(nsol_ebc))
-allocate(solid_acc(nn_solid,nsd_solid))
-allocate(vsolid_vel(nn_solid,nsd_solid))
+allocate(vsolid_vel(nsd_solid,nn_solid))
+allocate(vsolid_vel_old(nsd_solid,nn_solid))
+allocate(vsolid_acc(nsd_solid,nn_solid))
 allocate(solid_stress(3,ne_solid))
 allocate(solid_trac(nsd_solid,nn_solid))
+allocate(solid_fint(nsd_solid,nn_solid))
+allocate(solid_fkin(nsd_solid,nn_solid))
+allocate(vsolid_fint(nsd_solid,nn_solid))
+allocate(vsolid_fkin(nsd_solid,nn_solid))
 allocate(ffsi_vs(nsd_solid,nn_solid))
 solid_pave(:)=0.0d0
 solid_vel(:,:) = 0.0d0
@@ -148,8 +160,21 @@ solid_dis(:,:) = 0.0d0
 solid_acc(:,:) = 0.0d0
 solid_mlag(:)=0.0d0
 vsolid_vel(:,:) = 0.0d0
-solid_trac(:,:)=0.0d0
+vsolid_vel_old(:,:)=0.0d0
+vsolid_acc(:,:)=0.0d0
+solid_fint(:,:)=0.0d0
+vsolid_fint(:,:)=0.0d0
+vsolid_fkin(:,:)=0.0d0
+solid_fkin(:,:)=0.0d0
 solid_bcvel_old(:,:) = 0.0
+ffsi_vs(:,:)=0.0d0
+! Write Initial Conditions
+if (myid==0) then
+		write(*,*) 'Wrote Output Files:'
+		call paraout_solid(its,solid_coor_curr,solid_vel,solid_acc,solid_fint,solid_fkin,solid_trac,'pt1',143)
+		call paraout_fluid(its,xref,ien,d,I_fluid,f_fluids)
+		call paraout_solid(its,solid_coor_curr,vsolid_vel,vsolid_acc,vsolid_fint,vsolid_fkin,ffsi_vs,'vs1',145)
+endif
 !=================================================================
 ! time loop
 !=================================================================
@@ -180,7 +205,8 @@ solid_coor_pre1(:,:) = solid_coor_curr(:,:)
 !write(*,*) 'solid_coor_curr',solid_coor_curr
 solid_trac(:,:) = 0.0d0
 do ie=1,nn_solid
-solid_trac(1:nsd_solid,ie) = solid_pave(ie)
+!Temporary!
+solid_trac(1:nsd_solid,ie) =0.0d0*solid_pave(ie)
 end do
 !-------------------------------
 ! correct the curr solid coor by solving the solid mon equations
@@ -188,7 +214,7 @@ end do
 if (myid==0) then
 write(*,*) '******SOLVE SOLID HERE*******'
 endif
-call solve_solid(ien_sbc,solid_trac,solid_dis,solid_vel,solid_acc,solid_mlag,solid_bcvel,solid_coor_curr,solid_stress)
+call solve_solid(ien_sbc,solid_trac,solid_dis,solid_vel,solid_acc,solid_mlag,solid_coor_curr,solid_stress,solid_fint,solid_fkin)
 !call solve_solid_disp(solid_coor_init,solid_coor_curr,id_solidbc,solid_fem_con,node_sbc, &
 !                        solid_coor_pre1,solid_vel,solid_accel,ien_sbc,solid_trac,solid_bcvel,mtyp
 !--------------------------------
@@ -216,20 +242,14 @@ fvis(:)=vis_liq+vis_solid*I_fluid(:)
 time=mpi_wtime()-time
 if (myid == 0) write(*,*) '---Time for update indicator field---', time
 !=================================================================
-! Solid solver
-!write(*,*) 'starting my own litte solid solver'
-!call res_solid(solid_coor_init,solid_coor_curr,solid_fem_con, solid_force_FSI,&
-!solid_coor_pre1,solid_coor_pre2,id_solidbc,solid_accel,solid_pave,solid_bcvel,solid_bcvel_old,solid_vel)
-!=================================================================
 ! Distribution of the solid forces to the fluid domain
 ! f^fsi(t) -> f(t)
-write(*,*) 'calculating delta'
-call delta_exchange(solid_force_FSI,nn_solid,f_fluids,nn,ndelta,dvolume,nsd, &
-delta_exchange_solid_to_fluid,solid_pave,d(ndf,:))
-do ie = 1, nn
-f_fluids(:,ie) = f_fluids(:,ie) * fden(ie)
-end do
-!f_fluids=0.0
+	write(*,*) 'calculating delta'
+	call delta_exchange(ffsi_vs,nn_solid,f_fluids,nn,ndelta,dvolume,nsd, &
+	delta_exchange_solid_to_fluid,solid_pave,d(ndf,:))
+	do ie = 1, nn
+		f_fluids(:,ie) = f_fluids(:,ie) * fden(ie)
+	end do
 endif
 !=================================================================
 ! FEM Navier-Stokes Solver (GMRES) - calculates v(t+dt),p(t+dt)
@@ -244,31 +264,29 @@ include "hypo_fluid_solver.f90"
 !==================
 time=mpi_wtime()-time
 if (myid == 0) write(*,*) '---Time for fluid solver---', time
-! if (myid == 0) then
 !=================================================================
 ! Interpolation fluid velocity -> immersed material points
 ! v^f(t+dt) -> v^s(t+dt)
+!if (myid==0) then
 call delta_exchange(vsolid_vel,nn_solid,d(1:nsd,:),nn,ndelta,dvolume,nsd, &
 delta_exchange_fluid_to_solid,solid_pave,d(ndf,:))
-if (myid==0) then
-	write(*,*) 'Velocity of the Virtual Fluid at each solid node after delta_exchange'
-	do i=1,nn_solid
-		write(*,*) vsolid_vel(i,1:nsd_solid)
-	enddo
-endif
+!write(*,*) 'passed delta_exchange'
+call get_fsi(solid_fint,solid_fkin,solid_dis,vsolid_vel,vsolid_vel_old,vsolid_acc,solid_pave,vsolid_fint,vsolid_fkin,ffsi_vs)
+!get_fsi(fint_s,fkin_s,dis_s,vel_vs,vel_vs_old,acc_vs,p_vs,fint_vs,fkin_vs,ffsi)
+!endif
+vsolid_vel_old(:,:)=vsolid_vel(:,:)
 call mpi_barrier(mpi_comm_world,ierror)
-call get_fsi(solid_stress,solid_dis,solid_vel,solid_acc,vsolid_vel,ffsi_vs)
-call mpi_barrier(mpi_comm_world,ierror)
-! endif
 !=================================================================
 if (myid == 0) then
 	if (mod(its,ntsbout) .eq. 0) then
-		call paraout_solid(its,solid_dis,solid_vel,ien_solid,solid_stress)
+		write(*,*) 'Wrote Output Files:'
+		call paraout_solid(its,solid_coor_curr,solid_vel,solid_acc,solid_fint,solid_fkin,solid_trac,'pt1',143)
 		call paraout_fluid(its,xref,ien,d,I_fluid,f_fluids)
-		call paraout_vsolid(its,solid_coor_curr,vsolid_vel,ffsi_vs)
-		!include "hypo_write_output.fi"
+		call paraout_solid(its,solid_coor_curr,vsolid_vel,vsolid_acc,vsolid_fint,vsolid_fkin,ffsi_vs,'vs1',145)
 	endif
 endif
-
+call mpi_barrier(mpi_comm_world,ierror)
+!TEMPORARY!
+ffsi_vs(:,:)=0.0d0
 enddo time_loop
 end subroutine hypo
